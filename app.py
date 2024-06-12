@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 DATABASE_HOST = os.getenv("DB_HOST")
@@ -20,6 +21,9 @@ mydb = mysql.connector.connect(host=DATABASE_HOST,
 mycursor = mydb.cursor()
 
 app = FastAPI()
+
+# 掛載靜態文件
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -72,9 +76,11 @@ async def page_keyword(request: Request,
             attractions = []
 
             for myresult in myresults:
-                images = myresult[9]
-                images = [images]
-                print(type(images))  # list，這樣一來要取出單張圖片應該就沒問題了！
+                images_original = myresult[9]
+                print("images_original: ", images_original)
+                images = images_original.split(',')
+                # 上行本來用images = [images]，改用Phild建議的方法看看是否會不同
+                print("images: ", images)  # list，這樣一來要取出單張圖片應該就沒問題了！
 
                 attraction = {
                     "id": myresult[0],
@@ -89,6 +95,7 @@ async def page_keyword(request: Request,
                     "images": images,
                 }
                 attractions.append(attraction)
+                print(images)
 
             # 計算查詢總筆數
             if keyword:
@@ -117,6 +124,7 @@ async def page_keyword(request: Request,
             return {"nextPage": next_page, "data": attractions}
 
     except Exception as err:
+        print(err)
         return JSONResponse(content={
             "error": True,
             "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
