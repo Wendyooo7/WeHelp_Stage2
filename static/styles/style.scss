@@ -25,10 +25,16 @@ div#top {
 }
 
 header nav {
+  border: 3px solid black;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px auto;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  background-color: white;
+  z-index: 5;
 
   .left h1 {
     font-weight: 600;
@@ -82,7 +88,7 @@ header {
       display: flex;
       align-items: center;
 
-      #banner__search_keyword {
+      #banner__search__keyword {
         height: 30px;
         font-size: 20px;
         border-radius: 5px 0 0 5px;
@@ -112,12 +118,8 @@ main {
     overflow: hidden;
     // 出乎意料地，這邊也要設overflow: hidden;否則寬度變小箭頭按鈕會看不到，只剩中間的部分li
 
-    #mrt-bar__ul-container {
-      overflow: hidden;
-      // overflow要設在ul的父層，這樣放不下的li才不會超版，設在ul的話最初超出的li會直接被藏起來，之後滑動時顯示的li是空白的
-    }
-
     img.mrt-bar__btn {
+      width: 32px;
       opacity: 0.5;
 
       &:hover {
@@ -126,24 +128,32 @@ main {
       }
     }
 
-    ul#mrt-bar__list {
-      display: flex;
-      list-style: none;
-      align-items: center;
-      // 讓li垂直置中
-      transition: transform 0.05s ease;
+    #mrt-bar__ul-container {
+      overflow-x: scroll;
+      scrollbar-width: none;
+      width: 100%;
+      // overflow: hidden;
+      // // overflow要設在ul的父層，這樣放不下的li才不會超版，設在ul的話最初超出的li會直接被藏起來，之後滑動時顯示的li是空白的
 
-      li {
-        border: 1px solid black;
-        font-size: 15px;
-        // min-width: 80px;
-        // 上行設width和min-width都可以，寬度夠才能確保li標籤中的文字不會換行，max-width不行
-        padding: 10px;
-        white-space: nowrap; /* 防止空間不夠時自動換行，設在ul也可以 */
+      ul#mrt-bar__list {
+        display: flex;
+        list-style: none;
+        align-items: center;
+        // 讓li垂直置中
+        // transition: transform 0.05s ease;
 
-        &:hover {
-          cursor: pointer;
-          font-weight: bold;
+        li {
+          display: inline-block;
+          font-size: 15px;
+          // min-width: 80px;
+          // 上行設width和min-width都可以，寬度夠才能確保li標籤中的文字不會換行，max-width不行
+          padding: 10px;
+          white-space: nowrap; /* 防止空間不夠時自動換行，設在ul也可以 */
+
+          &:hover {
+            cursor: pointer;
+            font-weight: bold;
+          }
         }
       }
     }

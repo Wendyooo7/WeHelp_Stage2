@@ -23,7 +23,7 @@
           <h3>探索每個角落，體驗城市的深度旅遊行程</h3>
           <div id="banner__search">
             <input
-              id="banner__search_keyword"
+              id="banner__search__keyword"
               type="text"
               placeholder="輸入景點名稱查詢"
               value=""
@@ -48,17 +48,20 @@
           id="mrt-bar__left-btn"
           class="mrt-bar__btn"
           src="/static/styles/images/left_btn.png"
+          onclick="scrollToLeft()"
           alt="按鈕"
         />
 
         <div id="mrt-bar__ul-container">
           <ul id="mrt-bar__list"></ul>
         </div>
+
         <img
           id="mrt-bar__right-btn"
           class="mrt-bar__btn"
           src="/static/styles/images/right_btn.png"
           alt="按鈕"
+          onclick="scrollRight()"
         />
       </div>
       <div id="attractions"></div>
