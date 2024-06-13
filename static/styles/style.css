@@ -11,30 +11,22 @@ img {
   display: block;
 }
 
-img#welcome101 {
-  width: 100%; /* 讓圖片寬度與其容器相同，注意！此時就不能用max-width，否則1920px網頁右側還是會留白 */
-  height: 320px; /* 保持圖片的長寬比 */
-  position: absolute;
-  top: 60px;
-  z-index: -1;
-}
-
-div#top {
-  display: flex;
-  justify-content: center;
-}
-
-header nav {
-  border: 3px solid black;
+header {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  justify-content: center;
   position: fixed;
   top: 0;
   background-color: white;
-  z-index: 5;
+  padding: 10px;
+  z-index: 100;
+}
+header nav {
+  width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
 }
 header nav .left h1 {
   font-weight: 600;
@@ -48,40 +40,50 @@ header nav .right .item {
   margin-left: 15px;
 }
 
-header {
-  border: 3px solid black;
+div#banner__img {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+}
+div#banner__img img#welcome101 {
+  width: 100%; /* 讓圖片寬度與其容器相同，注意！此時就不能用max-width，否則1920px網頁右側還是會留白 */
+  height: 320px; /* 保持圖片的長寬比 */
+}
+div#banner__img div#banner-area {
   width: 1200px;
-}
-header div.banner__text {
-  max-width: 1200px;
   border: 3px solid red;
-  margin-top: 7%;
-  margin-bottom: 9%;
+  position: absolute;
+  top: 50;
 }
-header div.banner__text h2,
-header div.banner__text h3,
-header div.banner__text input {
+div#banner__img div#banner-area div#banner__text {
+  width: 100%;
+}
+div#banner__img div#banner-area div#banner__text h2,
+div#banner__img div#banner-area div#banner__text h3,
+div#banner__img div#banner-area div#banner__text input {
   margin: 10px 0;
 }
-header div.banner__text h2 {
+div#banner__img div#banner-area div#banner__text h2 {
   color: white;
   font-size: 30px;
 }
-header div.banner__text h3 {
+div#banner__img div#banner-area div#banner__text h3 {
   color: white;
   font-size: 15px;
   font-weight: normal;
 }
-header div.banner__text #banner__search {
+div#banner__img div#banner-area div#banner__text #banner__search {
   display: flex;
   align-items: center;
 }
-header div.banner__text #banner__search #banner__search__keyword {
+div#banner__img div#banner-area div#banner__text #banner__search #banner__search__keyword {
   height: 30px;
   font-size: 20px;
   border-radius: 5px 0 0 5px;
 }
-header div.banner__text #banner__search #banner__search__btn {
+div#banner__img div#banner-area div#banner__text #banner__search #banner__search__btn {
   background-color: rgb(68, 136, 153);
   border-radius: 0 5px 5px 0;
 }
@@ -129,7 +131,6 @@ main div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list li:hover {
   font-weight: bold;
 }
 main div#attractions {
-  border: 3px solid black;
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 創建3列，每列相等的寬度 */
   gap: 20px; /* 設置列之間的間隙 */
@@ -166,4 +167,12 @@ main div.attraction .attraction__info .attraction__info__CAT {
   color: rgb(117, 117, 117);
   font-weight: 500;
   font-size: 16px;
+}
+
+footer {
+  background-color: rgb(117, 117, 117);
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  padding: 15px;
 }/*# sourceMappingURL=style.css.map */

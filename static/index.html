@@ -7,18 +7,26 @@
     <link rel="stylesheet" href="static/styles/style.css" />
   </head>
   <body>
-    <div id="top">
-      <!-- <div class="banner"></div> -->
-      <header>
-        <nav>
-          <div class="left"><h1>台北一日遊</h1></div>
-          <div class="right">
-            <div class="item">預定行程</div>
-            <div class="item">登入／註冊</div>
-          </div>
-        </nav>
+    <header>
+      <nav>
+        <div class="left"><h1>台北一日遊</h1></div>
+        <div class="right">
+          <div class="item">預定行程</div>
+          <div class="item">登入／註冊</div>
+        </div>
+      </nav>
+    </header>
 
-        <div class="banner__text">
+    <div id="banner__img">
+      <!-- <div class="banner"></div> -->
+      <img
+        id="welcome101"
+        src="/static/styles/images/welcome101.png"
+        alt="台北101歡迎您"
+      />
+
+      <div id="banner-area">
+        <div id="banner__text">
           <h2>輕鬆享受台北一日悠閒</h2>
           <h3>探索每個角落，體驗城市的深度旅遊行程</h3>
           <div id="banner__search">
@@ -33,14 +41,7 @@
             </div>
           </div>
         </div>
-      </header>
-    </div>
-    <div id="banner">
-      <img
-        id="welcome101"
-        src="/static/styles/images/welcome101.png"
-        alt="台北101歡迎您"
-      />
+      </div>
     </div>
     <main>
       <div id="mrt-bar">
@@ -66,7 +67,7 @@
       </div>
       <div id="attractions"></div>
     </main>
-    <footer></footer>
+    <footer>COPYRIGHT © 2021 台北一日遊</footer>
     <script src="/static/js/index.js"></script>
   </body>
 </html>

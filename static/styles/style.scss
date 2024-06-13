@@ -11,43 +11,36 @@ img {
   display: block;
 }
 
-img#welcome101 {
-  width: 100%; /* 讓圖片寬度與其容器相同，注意！此時就不能用max-width，否則1920px網頁右側還是會留白 */
-  height: 320px; /* 保持圖片的長寬比 */
-  position: absolute;
-  top: 60px;
-  z-index: -1;
-}
-
-div#top {
-  display: flex;
-  justify-content: center;
-}
-
-header nav {
-  border: 3px solid black;
+header {
   width: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  justify-content: center;
   position: fixed;
   top: 0;
   background-color: white;
-  z-index: 5;
+  padding: 10px;
+  z-index: 100;
 
-  .left h1 {
-    font-weight: 600;
-    color: rgb(68, 136, 153);
-    font-size: 30px;
-  }
-
-  .right {
+  nav {
+    width: 1200px;
     display: flex;
-    // justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
 
-    .item {
-      margin-left: 15px;
+    .left h1 {
+      font-weight: 600;
+      color: rgb(68, 136, 153);
+      font-size: 30px;
+    }
+
+    .right {
+      display: flex;
+      // justify-content: flex-end;
+
+      .item {
+        margin-left: 15px;
+      }
     }
   }
 }
@@ -56,47 +49,66 @@ header nav {
 //   background-image: url("/static/styles/images/welcome101.png");
 // }
 
-header {
-  border: 3px solid black;
-  width: 1200px;
+div#banner__img {
+  // border: 3px solid black;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
 
-  div.banner__text {
-    max-width: 1200px;
+  img#welcome101 {
+    width: 100%; /* 讓圖片寬度與其容器相同，注意！此時就不能用max-width，否則1920px網頁右側還是會留白 */
+    height: 320px; /* 保持圖片的長寬比 */
+    // position: absolute;
+    // top: 60px;
+    // position: relative;
+    // z-index: -1;
+  }
+
+  div#banner-area {
+    width: 1200px;
     border: 3px solid red;
-    margin-top: 7%;
-    margin-bottom: 9%;
+    position: absolute;
+    top: 50;
 
-    h2,
-    h3,
-    input {
-      margin: 10px 0;
-      // 左右不設，否則和標題的台北一日遊不能對齊
-    }
+    div#banner__text {
+      width: 100%;
+      // margin-top: 7%;
+      // margin-bottom: 9%;
 
-    h2 {
-      color: white;
-      font-size: 30px;
-    }
-
-    h3 {
-      color: white;
-      font-size: 15px;
-      font-weight: normal;
-    }
-
-    #banner__search {
-      display: flex;
-      align-items: center;
-
-      #banner__search__keyword {
-        height: 30px;
-        font-size: 20px;
-        border-radius: 5px 0 0 5px;
+      h2,
+      h3,
+      input {
+        margin: 10px 0;
+        // 左右不設，否則和標題的台北一日遊不能對齊
       }
 
-      #banner__search__btn {
-        background-color: rgba(68, 136, 153);
-        border-radius: 0 5px 5px 0;
+      h2 {
+        color: white;
+        font-size: 30px;
+      }
+
+      h3 {
+        color: white;
+        font-size: 15px;
+        font-weight: normal;
+      }
+
+      #banner__search {
+        display: flex;
+        align-items: center;
+
+        #banner__search__keyword {
+          height: 30px;
+          font-size: 20px;
+          border-radius: 5px 0 0 5px;
+        }
+
+        #banner__search__btn {
+          background-color: rgba(68, 136, 153);
+          border-radius: 0 5px 5px 0;
+        }
       }
     }
   }
@@ -160,7 +172,7 @@ main {
   }
 
   div#attractions {
-    border: 3px solid black;
+    // border: 3px solid black;
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 創建3列，每列相等的寬度 */
     gap: 20px; /* 設置列之間的間隙 */
@@ -204,4 +216,12 @@ main {
       }
     }
   }
+}
+
+footer {
+  background-color: rgb(117, 117, 117);
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  padding: 15px;
 }
