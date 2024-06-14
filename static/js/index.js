@@ -373,6 +373,7 @@ async function loadMRTlist() {
     const response = await fetch("http://127.0.0.1:8000/api/mrts");
     const data = await response.json();
     const data2 = data.data;
+
     // console.log(data2);
     // 裝32個捷運站名稱的陣列
     const ulMRT = document.querySelector("ul");
@@ -382,7 +383,151 @@ async function loadMRTlist() {
       const liMRT = document.createElement("li"); // 創建一個新的li元素
       liMRT.classList.add("mrt"); // 給新元素添加類別
       liMRT.textContent = mrt;
+
+      // liMRT.onclick = sendKeyword;
       ulMRT.appendChild(liMRT); // 將新元素添加到容器中
+    }
+
+    // 事件監聽器
+    const MRTlis = document.querySelectorAll(".mrt");
+    MRTlis.forEach((li) => {
+      li.addEventListener("click", async (event) => {
+        const clickedLi = event.target;
+        keyword = clickedLi.textContent;
+        const input = document.querySelector("#banner__search__keyword");
+        input.value = clickedLi.textContent;
+
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
+              keyword
+            )}`
+          );
+
+          const data = await response.json();
+          nextPage = data.nextPage;
+          const data2 = data.data;
+
+          divAttractions.innerHTML = "";
+
+          for (let i = 0; i < data2.length; i++) {
+            const name = data2[i].name;
+            const category = data2[i].category;
+            const mrt = data2[i].mrt;
+            const img = data2[i].images[0];
+
+            const divAttraction = document.createElement("div"); // 創建一個新的div元素
+            divAttraction.classList.add("attraction"); // 給新元素添加類別
+            divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
+
+            const divImgName = document.createElement("div");
+            divImgName.classList.add("attraction-img-name-container");
+            divAttraction.appendChild(divImgName);
+
+            const imgAttraction = document.createElement("img");
+            imgAttraction.classList.add("img0");
+            imgAttraction.src = img;
+            divImgName.appendChild(imgAttraction);
+
+            const divName = document.createElement("div");
+            divName.classList.add("attraction__info__name");
+            divName.textContent = name;
+            divImgName.appendChild(divName);
+
+            const divInfo = document.createElement("div");
+            divInfo.classList.add("attraction__info");
+            divAttraction.appendChild(divInfo);
+
+            const infoMRT = document.createElement("div");
+            infoMRT.classList.add("attraction__info__MRT");
+            infoMRT.textContent = mrt;
+            divInfo.appendChild(infoMRT);
+
+            const infoCAT = document.createElement("div");
+            infoCAT.classList.add("attraction__info__CAT");
+            infoCAT.textContent = category;
+            divInfo.appendChild(infoCAT);
+
+            lastAttraction = divAttraction;
+          }
+
+          // 如果還有新的div產生，就把它列入觀察對象
+          if (lastAttraction) {
+            lastAttractionObserver.observe(lastAttraction);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// onclick屬性
+const clickedLi = document.querySelector(".mrt");
+async function sendKeyword() {
+  keyword = clickedLi.textContent;
+  console.log("keyword: ", keyword);
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
+        keyword
+      )}`
+    );
+
+    const data = await response.json();
+    nextPage = data.nextPage;
+    const data2 = data.data;
+
+    divAttractions.innerHTML = "";
+
+    for (let i = 0; i < data2.length; i++) {
+      const name = data2[i].name;
+      const category = data2[i].category;
+      const mrt = data2[i].mrt;
+      const img = data2[i].images[0];
+
+      const divAttraction = document.createElement("div"); // 創建一個新的div元素
+      divAttraction.classList.add("attraction"); // 給新元素添加類別
+      divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
+
+      const divImgName = document.createElement("div");
+      divImgName.classList.add("attraction-img-name-container");
+      divAttraction.appendChild(divImgName);
+
+      const imgAttraction = document.createElement("img");
+      imgAttraction.classList.add("img0");
+      imgAttraction.src = img;
+      divImgName.appendChild(imgAttraction);
+
+      const divName = document.createElement("div");
+      divName.classList.add("attraction__info__name");
+      divName.textContent = name;
+      divImgName.appendChild(divName);
+
+      const divInfo = document.createElement("div");
+      divInfo.classList.add("attraction__info");
+      divAttraction.appendChild(divInfo);
+
+      const infoMRT = document.createElement("div");
+      infoMRT.classList.add("attraction__info__MRT");
+      infoMRT.textContent = mrt;
+      divInfo.appendChild(infoMRT);
+
+      const infoCAT = document.createElement("div");
+      infoCAT.classList.add("attraction__info__CAT");
+      infoCAT.textContent = category;
+      divInfo.appendChild(infoCAT);
+
+      lastAttraction = divAttraction;
+    }
+
+    // 如果還有新的div產生，就把它列入觀察對象
+    if (lastAttraction) {
+      lastAttractionObserver.observe(lastAttraction);
     }
   } catch (err) {
     console.log(err);
@@ -402,80 +547,10 @@ function scrollRight() {
   ulElement.scrollBy({ left: 300, behavior: "smooth" });
 }
 
-const MRTlis = document.querySelectorAll(".mrt");
-console.log("MRTlis: ", MRTlis);
-
-MRTlis.forEach((li) => {
-  console.log("li: ", li);
-
-  li.addEventListener("click", async (event) => {
-    const clickedLi = event.target;
-    keyword = clickedLi.textContent;
-    console.log("keyword: ", keyword);
-
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
-          keyword
-        )}`
-      );
-
-      const data = await response.json();
-      nextPage = data.nextPage;
-      const data2 = data.data;
-
-      divAttractions.innerHTML = "";
-
-      for (let i = 0; i < data2.length; i++) {
-        const name = data2[i].name;
-        const category = data2[i].category;
-        const mrt = data2[i].mrt;
-        const img = data2[i].images[0];
-
-        const divAttraction = document.createElement("div"); // 創建一個新的div元素
-        divAttraction.classList.add("attraction"); // 給新元素添加類別
-        divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
-
-        const divImgName = document.createElement("div");
-        divImgName.classList.add("attraction-img-name-container");
-        divAttraction.appendChild(divImgName);
-
-        const imgAttraction = document.createElement("img");
-        imgAttraction.classList.add("img0");
-        imgAttraction.src = img;
-        divImgName.appendChild(imgAttraction);
-
-        const divName = document.createElement("div");
-        divName.classList.add("attraction__info__name");
-        divName.textContent = name;
-        divImgName.appendChild(divName);
-
-        const divInfo = document.createElement("div");
-        divInfo.classList.add("attraction__info");
-        divAttraction.appendChild(divInfo);
-
-        const infoMRT = document.createElement("div");
-        infoMRT.classList.add("attraction__info__MRT");
-        infoMRT.textContent = mrt;
-        divInfo.appendChild(infoMRT);
-
-        const infoCAT = document.createElement("div");
-        infoCAT.classList.add("attraction__info__CAT");
-        infoCAT.textContent = category;
-        divInfo.appendChild(infoCAT);
-
-        lastAttraction = divAttraction;
-      }
-
-      // 如果還有新的div產生，就把它列入觀察對象
-      if (lastAttraction) {
-        lastAttractionObserver.observe(lastAttraction);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });
-});
+// window.addEventListener("click", () => {
+//   const MRTlis = document.querySelectorAll(".mrt");
+//   console.log("MRTlis: ", MRTlis);
+// });
 // 2-3的code
 // console.log(nextPage);
 // 這邊undefined了
