@@ -11,15 +11,6 @@ DATABASE_USER = os.getenv("DB_USER")
 DATABASE_PASSWORD = os.getenv("DB_PASSWORD")
 DATABASE_NAME = os.getenv("DB_NAME")
 
-# 初始化連接
-mydb = mysql.connector.connect(host=DATABASE_HOST,
-                               user=DATABASE_USER,
-                               password=DATABASE_PASSWORD,
-                               database=DATABASE_NAME,
-                               charset='utf8mb4')
-
-mycursor = mydb.cursor()
-
 app = FastAPI()
 
 # 掛載靜態文件
@@ -66,62 +57,73 @@ async def page_keyword(request: Request,
     sql = f"SELECT * from attraction {where_clause} LIMIT {size} OFFSET {offset}"
 
     try:
-        mycursor.execute(sql, params)
+        # 初始化連接
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
 
-        myresults = mycursor.fetchall()
+        cursor = mydb.cursor()
 
-        if not myresults:
-            return {"nextPage": None, "data": []}
-        else:
-            attractions = []
+        # 使用with確保在使用完畢後自動關閉
+        with cursor as mycursor:
+            mycursor.execute(sql, params)
 
-            for myresult in myresults:
-                images_original = myresult[9]
-                print("images_original: ", images_original)
-                images = images_original.split(',')
-                # 上行本來用images = [images]，改用Phild建議的方法看看是否會不同
-                print("images: ", images)  # list，這樣一來要取出單張圖片應該就沒問題了！
+            myresults = mycursor.fetchall()
 
-                attraction = {
-                    "id": myresult[0],
-                    "name": myresult[1],
-                    "category": myresult[2],
-                    "description": myresult[3],
-                    "address": myresult[4],
-                    "transport": myresult[5],
-                    "mrt": myresult[6],
-                    "latitude": myresult[7],
-                    "longitude": myresult[8],
-                    "images": images,
-                }
-                attractions.append(attraction)
-                print(images)
-
-            # 計算查詢總筆數
-            if keyword:
-                total_sql = f"SELECT COUNT(*) FROM attraction {where_clause}"
-                mycursor.execute(total_sql, params)
+            if not myresults:
+                return {"nextPage": None, "data": []}
             else:
-                total_sql = "SELECT COUNT(*) FROM attraction"
-                mycursor.execute(total_sql, [])
-            total_records = mycursor.fetchone()[0]
-            # 若沒有設定[0]，結果將是(總筆數)
+                attractions = []
 
-            # 根據當前頁數和總資料數決定nextPage的值
-            if total_records % size > 0:
-                total_pages = total_records // size + 1
-            else:
-                total_pages = total_records // size
+                for myresult in myresults:
+                    images_original = myresult[9]
+                    print("images_original: ", images_original)
+                    images = images_original.split(',')
+                    # 上行本來用images = [images]，改用Phild建議的方法看看是否會不同
+                    print("images: ", images)  # list，這樣一來要取出單張圖片應該就沒問題了！
 
-            # 判斷下一頁的值是否為空，若為空，則此頁是最後一頁或超出最後一頁
-            if page >= total_pages - 1:
-                next_page = None
-            else:
-                next_page = page + 1
+                    attraction = {
+                        "id": myresult[0],
+                        "name": myresult[1],
+                        "category": myresult[2],
+                        "description": myresult[3],
+                        "address": myresult[4],
+                        "transport": myresult[5],
+                        "mrt": myresult[6],
+                        "latitude": myresult[7],
+                        "longitude": myresult[8],
+                        "images": images,
+                    }
+                    attractions.append(attraction)
+                    print(images)
 
-            # next_page = None if page >= total_pages - 1 else page + 1
+                # 計算查詢總筆數
+                if keyword:
+                    total_sql = f"SELECT COUNT(*) FROM attraction {where_clause}"
+                    mycursor.execute(total_sql, params)
+                else:
+                    total_sql = "SELECT COUNT(*) FROM attraction"
+                    mycursor.execute(total_sql, [])
+                total_records = mycursor.fetchone()[0]
+                # 若沒有設定[0]，結果將是(總筆數)
 
-            return {"nextPage": next_page, "data": attractions}
+                # 根據當前頁數和總資料數決定nextPage的值
+                if total_records % size > 0:
+                    total_pages = total_records // size + 1
+                else:
+                    total_pages = total_records // size
+
+                # 判斷下一頁的值是否為空，若為空，則此頁是最後一頁或超出最後一頁
+                if page >= total_pages - 1:
+                    next_page = None
+                else:
+                    next_page = page + 1
+
+                # next_page = None if page >= total_pages - 1 else page + 1
+
+                return {"nextPage": next_page, "data": attractions}
 
     except Exception as err:
         print(err)
@@ -130,6 +132,12 @@ async def page_keyword(request: Request,
             "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
         },
                             status_code=500)
+    finally:
+        # 確保最終關閉資料庫連接
+        if mycursor:
+            mycursor.close()
+        if mydb:
+            mydb.close()
 
 
 # 第二支API
@@ -139,33 +147,44 @@ async def query_attraction_id(attractionId: int):
     sql = "SELECT * from attraction Where id = %s"
 
     try:
-        mycursor.execute(sql, (attractionId, ))
+        # 初始化連接
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
 
-        myresult = mycursor.fetchone()
+        cursor = mydb.cursor()
 
-        if not myresult:
-            return JSONResponse(content={
-                "error": True,
-                "message": "景點編號不正確"
-            },
-                                status_code=400)
-        else:
-            images = myresult[9]
-            images = [images]
-            return {
-                "data": {
-                    "id": myresult[0],
-                    "name": myresult[1],
-                    "category": myresult[2],
-                    "description": myresult[3],
-                    "address": myresult[4],
-                    "transport": myresult[5],
-                    "mrt": myresult[6],
-                    "latitude": myresult[7],
-                    "longitude": myresult[8],
-                    "images": images,
+        # 使用with確保在使用完畢後自動關閉
+        with cursor as mycursor:
+            mycursor.execute(sql, (attractionId, ))
+
+            myresult = mycursor.fetchone()
+
+            if not myresult:
+                return JSONResponse(content={
+                    "error": True,
+                    "message": "景點編號不正確"
+                },
+                                    status_code=400)
+            else:
+                images = myresult[9]
+                images = [images]
+                return {
+                    "data": {
+                        "id": myresult[0],
+                        "name": myresult[1],
+                        "category": myresult[2],
+                        "description": myresult[3],
+                        "address": myresult[4],
+                        "transport": myresult[5],
+                        "mrt": myresult[6],
+                        "latitude": myresult[7],
+                        "longitude": myresult[8],
+                        "images": images,
+                    }
                 }
-            }
 
     except Exception as err:
         return JSONResponse(content={
@@ -173,6 +192,12 @@ async def query_attraction_id(attractionId: int):
             "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
         },
                             status_code=500)
+    finally:
+        # 確保最終關閉資料庫連接
+        if mycursor:
+            mycursor.close()
+        if mydb:
+            mydb.close()
 
 
 # 第三支API
@@ -181,15 +206,26 @@ async def desc_mrt_count():
     sql = "SELECT mrt, COUNT(*) as count FROM attraction WHERE mrt IS NOT NULL GROUP BY mrt ORDER by count DESC"
 
     try:
-        mycursor.execute(sql)
+        # 建立資料庫連接
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+        cursor = mydb.cursor()
 
-        mrts = mycursor.fetchall()
-        # fetchall()的結果的資料結構為[(mrt,count), (mrt, count), ... ,(mrt, count)]
+        # 使用with確保在使用完畢後自動關閉
+        with cursor as mycursor:
 
-        mrts_list = []
-        for mrt in mrts:
-            mrts_list.append(mrt[0])
-        return {"data": mrts_list}
+            mycursor.execute(sql)
+
+            mrts = mycursor.fetchall()
+            # fetchall()的結果的資料結構為[(mrt,count), (mrt, count), ... ,(mrt, count)]
+
+            mrts_list = []
+            for mrt in mrts:
+                mrts_list.append(mrt[0])
+            return {"data": mrts_list}
 
     except Exception as err:
         return JSONResponse(content={
@@ -197,6 +233,12 @@ async def desc_mrt_count():
             "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
         },
                             status_code=500)
+    finally:
+        # 確保最終關閉資料庫連接
+        if mycursor:
+            mycursor.close()
+        if mydb:
+            mydb.close()
 
 
 if __name__ == "__main__":
