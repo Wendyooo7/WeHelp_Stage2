@@ -50,9 +50,9 @@ async def page_keyword(request: Request,
     where_clause = ""
     params = []
 
-    if keyword:
-        where_clause += "WHERE mrt = %s OR name LIKE %s"
-        params.extend([keyword, f"%{keyword}%"])
+    # if keyword:
+    #     where_clause += "WHERE mrt = %s OR name LIKE %s"
+    #     params.extend([keyword, f"%{keyword}%"])
 
     sql = f"SELECT * from attraction {where_clause} LIMIT {size} OFFSET {offset}"
 
@@ -71,7 +71,7 @@ async def page_keyword(request: Request,
             mycursor.execute(sql, params)
 
             myresults = mycursor.fetchall()
-
+            # print(myresults)
             if not myresults:
                 return {"nextPage": None, "data": []}
             else:
@@ -108,6 +108,7 @@ async def page_keyword(request: Request,
                     mycursor.execute(total_sql, [])
                 total_records = mycursor.fetchone()[0]
                 # 若沒有設定[0]，結果將是(總筆數)
+                print("total_records", total_records)
 
                 # 根據當前頁數和總資料數決定nextPage的值
                 if total_records % size > 0:
