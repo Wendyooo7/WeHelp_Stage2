@@ -1,145 +1,3 @@
-// // 目前都把Observer和loadMore()都放進window.onload中，發現有抓到第一頁最後一個div行天宮，但一直偵測它，看來是沒有成功移除偵測
-// const divAttractions = document.querySelector("#attractions");
-// let nextPage;
-// let lastAttraction;
-
-// window.onload = async function () {
-//   try {
-//     const response = await fetch("http://127.0.0.1:8000/api/attractions");
-//     const data = await response.json();
-//     // let nextPage = data.nextPage;
-//     // nextPage = nextPage;
-//     // 上行將資料賦值給全域變數
-//     nextPage = data.nextPage;
-//     console.log(nextPage);
-//     const data2 = data.data;
-
-//     for (let i = 0; i < data2.length; i++) {
-//       const name = data2[i].name;
-//       const category = data2[i].category;
-//       const mrt = data2[i].mrt;
-//       const img = data2[i].images[0];
-
-//       const divAttraction = document.createElement("div"); // 創建一個新的div元素
-//       divAttraction.classList.add("attraction"); // 給新元素添加類別
-//       divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
-
-//       const divImgName = document.createElement("div");
-//       divImgName.classList.add("attraction-img-name-container");
-//       divAttraction.appendChild(divImgName);
-
-//       const imgAttraction = document.createElement("img");
-//       // 之前寫錯的:attractionImg.src.add("img");
-//       imgAttraction.classList.add("img0");
-//       imgAttraction.src = img;
-//       divImgName.appendChild(imgAttraction);
-
-//       // 從這邊開始嘗試CSS用BEM命名
-//       const divName = document.createElement("div");
-//       divName.classList.add("attraction__info__name");
-//       divName.textContent = name;
-//       divImgName.appendChild(divName);
-
-//       const divInfo = document.createElement("div");
-//       divInfo.classList.add("attraction__info");
-//       divAttraction.appendChild(divInfo);
-
-//       const infoMRT = document.createElement("div");
-//       infoMRT.classList.add("attraction__info__MRT");
-//       infoMRT.textContent = mrt;
-//       divInfo.appendChild(infoMRT);
-
-//       const infoCAT = document.createElement("div");
-//       infoCAT.classList.add("attraction__info__CAT");
-//       infoCAT.textContent = category;
-//       divInfo.appendChild(infoCAT);
-//       // return nextPage;
-
-//       lastAttraction = document.querySelector(".attraction:last-child");
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   console.log(lastAttraction);
-//   console.log(typeof lastAttraction);
-
-//   // 放在異步函式外
-//   if (lastAttraction) {
-//     // 偵測最後一個.attraction
-//     const lastAttractionObserver = new IntersectionObserver(
-//       (entries) => {
-//         const lastAttractionEntries = entries[0];
-//         console.log(lastAttractionEntries);
-//         if (!lastAttractionEntries.isIntersecting) return loadMoreAttraction();
-//         // 這邊考慮把下面的loadMoreAttraction()宣告移上來，因為下面lastAttractionObserver.observe(".attraction:last-child");又抓不到了
-//         lastAttractionObserver.unobserve(lastAttractionEntries.target);
-//         // console.log(lastAttractionEntries.target);
-//         lastAttractionObserver.observe(lastAttraction);
-//       },
-//       { rootMargin: "100px" }
-//     );
-
-//     lastAttractionObserver.observe(lastAttraction);
-//   }
-
-//   async function loadMoreAttraction() {
-//     try {
-//       const response = await fetch(
-//         `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
-//           nextPage
-//         )}`
-//       );
-//       const data = await response.json();
-//       nextPage = data.nextPage;
-//       const data2 = data.data;
-
-//       for (let i = 0; i < data2.length; i++) {
-//         const name = data2[i].name;
-//         const category = data2[i].category;
-//         const mrt = data2[i].mrt;
-//         const img = data2[i].images[0];
-
-//         const divAttraction = document.createElement("div"); // 創建一個新的div元素
-//         divAttraction.classList.add("attraction"); // 給新元素添加類別
-//         divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
-//         lastAttractionObserver.observe(divAttraction);
-
-//         const divImgName = document.createElement("div");
-//         divImgName.classList.add("attraction-img-name-container");
-//         divAttraction.appendChild(divImgName);
-
-//         const imgAttraction = document.createElement("img");
-//         // 之前寫錯的:attractionImg.src.add("img");
-//         imgAttraction.classList.add("img0");
-//         imgAttraction.src = img;
-//         divImgName.appendChild(imgAttraction);
-
-//         // 從這邊開始嘗試CSS用BEM命名
-//         const divName = document.createElement("div");
-//         divName.classList.add("attraction__info__name");
-//         divName.textContent = name;
-//         divImgName.appendChild(divName);
-
-//         const divInfo = document.createElement("div");
-//         divInfo.classList.add("attraction__info");
-//         divAttraction.appendChild(divInfo);
-
-//         const infoMRT = document.createElement("div");
-//         infoMRT.classList.add("attraction__info__MRT");
-//         infoMRT.textContent = mrt;
-//         divInfo.appendChild(infoMRT);
-
-//         const infoCAT = document.createElement("div");
-//         infoCAT.classList.add("attraction__info__CAT");
-//         infoCAT.textContent = category;
-//         divInfo.appendChild(infoCAT);
-//       }
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   }
-// };
-
 const divAttractions = document.querySelector("#attractions");
 let nextPage;
 let lastAttraction;
@@ -547,13 +405,158 @@ function scrollRight() {
   ulElement.scrollBy({ left: 300, behavior: "smooth" });
 }
 
+// 在全域使用window.addEventListener可以選取全部的li標籤，但使用li.addEventListener不行，怪哉
 // window.addEventListener("click", () => {
 //   const MRTlis = document.querySelectorAll(".mrt");
 //   console.log("MRTlis: ", MRTlis);
 // });
+
+// 以下程式碼待整理
 // 2-3的code
 // console.log(nextPage);
 // 這邊undefined了
+
+// // 目前都把Observer和loadMore()都放進window.onload中，發現有抓到第一頁最後一個div行天宮，但一直偵測它，看來是沒有成功移除偵測
+// const divAttractions = document.querySelector("#attractions");
+// let nextPage;
+// let lastAttraction;
+
+// window.onload = async function () {
+//   try {
+//     const response = await fetch("http://127.0.0.1:8000/api/attractions");
+//     const data = await response.json();
+//     // let nextPage = data.nextPage;
+//     // nextPage = nextPage;
+//     // 上行將資料賦值給全域變數
+//     nextPage = data.nextPage;
+//     console.log(nextPage);
+//     const data2 = data.data;
+
+//     for (let i = 0; i < data2.length; i++) {
+//       const name = data2[i].name;
+//       const category = data2[i].category;
+//       const mrt = data2[i].mrt;
+//       const img = data2[i].images[0];
+
+//       const divAttraction = document.createElement("div"); // 創建一個新的div元素
+//       divAttraction.classList.add("attraction"); // 給新元素添加類別
+//       divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
+
+//       const divImgName = document.createElement("div");
+//       divImgName.classList.add("attraction-img-name-container");
+//       divAttraction.appendChild(divImgName);
+
+//       const imgAttraction = document.createElement("img");
+//       // 之前寫錯的:attractionImg.src.add("img");
+//       imgAttraction.classList.add("img0");
+//       imgAttraction.src = img;
+//       divImgName.appendChild(imgAttraction);
+
+//       // 從這邊開始嘗試CSS用BEM命名
+//       const divName = document.createElement("div");
+//       divName.classList.add("attraction__info__name");
+//       divName.textContent = name;
+//       divImgName.appendChild(divName);
+
+//       const divInfo = document.createElement("div");
+//       divInfo.classList.add("attraction__info");
+//       divAttraction.appendChild(divInfo);
+
+//       const infoMRT = document.createElement("div");
+//       infoMRT.classList.add("attraction__info__MRT");
+//       infoMRT.textContent = mrt;
+//       divInfo.appendChild(infoMRT);
+
+//       const infoCAT = document.createElement("div");
+//       infoCAT.classList.add("attraction__info__CAT");
+//       infoCAT.textContent = category;
+//       divInfo.appendChild(infoCAT);
+//       // return nextPage;
+
+//       lastAttraction = document.querySelector(".attraction:last-child");
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   console.log(lastAttraction);
+//   console.log(typeof lastAttraction);
+
+//   // 放在異步函式外
+//   if (lastAttraction) {
+//     // 偵測最後一個.attraction
+//     const lastAttractionObserver = new IntersectionObserver(
+//       (entries) => {
+//         const lastAttractionEntries = entries[0];
+//         console.log(lastAttractionEntries);
+//         if (!lastAttractionEntries.isIntersecting) return loadMoreAttraction();
+//         // 這邊考慮把下面的loadMoreAttraction()宣告移上來，因為下面lastAttractionObserver.observe(".attraction:last-child");又抓不到了
+//         lastAttractionObserver.unobserve(lastAttractionEntries.target);
+//         // console.log(lastAttractionEntries.target);
+//         lastAttractionObserver.observe(lastAttraction);
+//       },
+//       { rootMargin: "100px" }
+//     );
+
+//     lastAttractionObserver.observe(lastAttraction);
+//   }
+
+//   async function loadMoreAttraction() {
+//     try {
+//       const response = await fetch(
+//         `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
+//           nextPage
+//         )}`
+//       );
+//       const data = await response.json();
+//       nextPage = data.nextPage;
+//       const data2 = data.data;
+
+//       for (let i = 0; i < data2.length; i++) {
+//         const name = data2[i].name;
+//         const category = data2[i].category;
+//         const mrt = data2[i].mrt;
+//         const img = data2[i].images[0];
+
+//         const divAttraction = document.createElement("div"); // 創建一個新的div元素
+//         divAttraction.classList.add("attraction"); // 給新元素添加類別
+//         divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
+//         lastAttractionObserver.observe(divAttraction);
+
+//         const divImgName = document.createElement("div");
+//         divImgName.classList.add("attraction-img-name-container");
+//         divAttraction.appendChild(divImgName);
+
+//         const imgAttraction = document.createElement("img");
+//         // 之前寫錯的:attractionImg.src.add("img");
+//         imgAttraction.classList.add("img0");
+//         imgAttraction.src = img;
+//         divImgName.appendChild(imgAttraction);
+
+//         // 從這邊開始嘗試CSS用BEM命名
+//         const divName = document.createElement("div");
+//         divName.classList.add("attraction__info__name");
+//         divName.textContent = name;
+//         divImgName.appendChild(divName);
+
+//         const divInfo = document.createElement("div");
+//         divInfo.classList.add("attraction__info");
+//         divAttraction.appendChild(divInfo);
+
+//         const infoMRT = document.createElement("div");
+//         infoMRT.classList.add("attraction__info__MRT");
+//         infoMRT.textContent = mrt;
+//         divInfo.appendChild(infoMRT);
+
+//         const infoCAT = document.createElement("div");
+//         infoCAT.classList.add("attraction__info__CAT");
+//         infoCAT.textContent = category;
+//         divInfo.appendChild(infoCAT);
+//       }
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
+// };
 
 // // 偵測全部
 // // 選取要偵測的元素
