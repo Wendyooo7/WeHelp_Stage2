@@ -29,7 +29,7 @@ const lastAttractionObserver = new IntersectionObserver(
 
 async function loadAttractions() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/attractions");
+    const response = await fetch("/api/attractions");
     const data = await response.json();
     nextPage = data.nextPage;
     const data2 = data.data;
@@ -94,15 +94,13 @@ async function loadMoreAttraction() {
 
     if (keyword) {
       response = await fetch(
-        `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
+        `/api/attractions?page=${encodeURIComponent(
           nextPage
         )}&keyword=${encodeURIComponent(keyword)}`
       );
     } else {
       response = await fetch(
-        `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
-          nextPage
-        )}`
+        `/api/attractions?page=${encodeURIComponent(nextPage)}`
       );
     }
 
@@ -166,9 +164,7 @@ document
     keyword = document.querySelector("#banner__search__keyword").value;
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
-          keyword
-        )}`
+        `/api/attractions?keyword=${encodeURIComponent(keyword)}`
       );
 
       const data = await response.json();
@@ -229,7 +225,7 @@ document
 
 async function loadMRTlist() {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/mrts");
+    const response = await fetch("/api/mrts");
     const data = await response.json();
     const data2 = data.data;
 
@@ -258,9 +254,7 @@ async function loadMRTlist() {
 
         try {
           const response = await fetch(
-            `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
-              keyword
-            )}`
+            `/api/attractions?keyword=${encodeURIComponent(keyword)}`
           );
 
           const data = await response.json();
@@ -332,9 +326,7 @@ async function sendKeyword() {
 
   try {
     const response = await fetch(
-      `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
-        keyword
-      )}`
+      `/api/attractions?keyword=${encodeURIComponent(keyword)}`
     );
 
     const data = await response.json();
