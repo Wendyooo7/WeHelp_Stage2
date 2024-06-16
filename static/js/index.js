@@ -29,7 +29,7 @@ const lastAttractionObserver = new IntersectionObserver(
 
 async function loadAttractions() {
   try {
-    const response = await fetch("/api/attractions");
+    const response = await fetch("http://127.0.0.1:8000/api/attractions");
     const data = await response.json();
     nextPage = data.nextPage;
     const data2 = data.data;
@@ -39,6 +39,7 @@ async function loadAttractions() {
       const category = data2[i].category;
       const mrt = data2[i].mrt;
       const img = data2[i].images[0];
+      console.log(img);
 
       const divAttraction = document.createElement("div"); // 創建一個新的div元素
       divAttraction.classList.add("attraction"); // 給新元素添加類別
@@ -93,13 +94,15 @@ async function loadMoreAttraction() {
 
     if (keyword) {
       response = await fetch(
-        `/api/attractions?page=${encodeURIComponent(
+        `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
           nextPage
         )}&keyword=${encodeURIComponent(keyword)}`
       );
     } else {
       response = await fetch(
-        `/api/attractions?page=${encodeURIComponent(nextPage)}`
+        `http://127.0.0.1:8000/api/attractions?page=${encodeURIComponent(
+          nextPage
+        )}`
       );
     }
 
@@ -163,7 +166,9 @@ document
     keyword = document.querySelector("#banner__search__keyword").value;
     try {
       const response = await fetch(
-        `/api/attractions?keyword=${encodeURIComponent(keyword)}`
+        `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
+          keyword
+        )}`
       );
 
       const data = await response.json();
@@ -224,7 +229,7 @@ document
 
 async function loadMRTlist() {
   try {
-    const response = await fetch("/api/mrts");
+    const response = await fetch("http://127.0.0.1:8000/api/mrts");
     const data = await response.json();
     const data2 = data.data;
 
@@ -253,7 +258,9 @@ async function loadMRTlist() {
 
         try {
           const response = await fetch(
-            `/api/attractions?keyword=${encodeURIComponent(keyword)}`
+            `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
+              keyword
+            )}`
           );
 
           const data = await response.json();
@@ -325,7 +332,9 @@ async function sendKeyword() {
 
   try {
     const response = await fetch(
-      `/api/attractions?keyword=${encodeURIComponent(keyword)}`
+      `http://127.0.0.1:8000/api/attractions?keyword=${encodeURIComponent(
+        keyword
+      )}`
     );
 
     const data = await response.json();

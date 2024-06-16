@@ -50,9 +50,9 @@ async def page_keyword(request: Request,
     where_clause = ""
     params = []
 
-    # if keyword:
-    #     where_clause += "WHERE mrt = %s OR name LIKE %s"
-    #     params.extend([keyword, f"%{keyword}%"])
+    if keyword:
+        where_clause += "WHERE mrt = %s OR name LIKE %s"
+        params.extend([keyword, f"%{keyword}%"])
 
     sql = f"SELECT * from attraction {where_clause} LIMIT {size} OFFSET {offset}"
 
