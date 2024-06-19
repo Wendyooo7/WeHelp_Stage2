@@ -1,46 +1,4 @@
 @charset "UTF-8";
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Noto Sans TC", sans-serif;
-  font-size: 16px;
-}
-
-img {
-  display: block;
-}
-
-header {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  background-color: white;
-  z-index: 1000;
-}
-header nav {
-  max-width: 1200px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  padding: 10px;
-}
-header nav .left h1 {
-  font-weight: 600;
-  color: rgb(68, 136, 153);
-  font-size: 30px;
-}
-header nav .right {
-  display: flex;
-}
-header nav .right .item {
-  margin-left: 15px;
-}
-
 div#banner__img {
   width: 100%;
   display: flex;
@@ -58,7 +16,7 @@ div#banner__img div#banner-area {
   width: 100%;
   max-width: 1200px;
   position: absolute;
-  top: 100px;
+  top: 60px;
 }
 div#banner__img div#banner-area div#banner__text {
   width: 100%;
@@ -153,6 +111,9 @@ main div#attractions {
 main div.attraction {
   border: 1px solid rgb(232, 232, 232);
 }
+main div.attraction:hover {
+  cursor: pointer;
+}
 main div.attraction .attraction-img-name-container {
   position: relative;
 }
@@ -185,14 +146,6 @@ main div.attraction .attraction__info .attraction__info__CAT {
   font-size: 16px;
 }
 
-footer {
-  background-color: rgb(117, 117, 117);
-  text-align: center;
-  color: white;
-  font-size: 16px;
-  padding: 15px;
-}
-
 @media (min-width: 600px) and (max-width: 1199px) {
   main div#attractions {
     display: grid;
@@ -210,4 +163,4 @@ footer {
   main div.attraction .attraction-img-name-container img.img0 {
     height: 250px;
   }
-}/*# sourceMappingURL=style.css.map */
+}/*# sourceMappingURL=index.css.map */
