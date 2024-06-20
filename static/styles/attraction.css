@@ -18,7 +18,6 @@ main #attraction__top {
 main #attraction__top #attraction__top__pics {
   width: 50%;
   padding: 0 1.3%;
-  border: 3px solid green;
   height: 400px;
   overflow: hidden;
   position: relative;

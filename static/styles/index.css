@@ -55,6 +55,9 @@ div#banner__img div#banner-area div#banner__text #banner__search #banner__search
   align-items: center;
   justify-content: center;
 }
+div#banner__img div#banner-area div#banner__text #banner__search #banner__search__btn:hover {
+  cursor: pointer;
+}
 
 main {
   display: flex;
