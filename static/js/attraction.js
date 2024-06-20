@@ -23,6 +23,8 @@ async function fetchAttractionID() {
   }
 }
 
+let imgs;
+
 function renderAttraction(data) {
   // 接受 data 參數
   const name = data.name;
@@ -48,36 +50,69 @@ function renderAttraction(data) {
   const pTransport = document.querySelector("#attraction__bottom__transport");
   pTransport.textContent = transport;
 
-  console.log(data.images); // 印出一個有著所有url的array，array包一個字串元素，長度為1
-  // 因為我將寫進資料庫時，將所有圖片存進同一欄中，資料型態為陣列，所以這邊要將此長度為1的陣列，用split("分割的斷點")分隔成有著多個url的一個陣列，才可以分別取出個別的url
-  const imgs = data.images[0].split(",");
-  console.log(imgs); // 印出一個有著所有url的array，array包多個字串元素，長度為景點包含的圖片數
+  imgs = data.images[0].split(",");
 
-  for (let i = 0; i < imgs.length; i++) {
-    const img = imgs[i];
-    console.log(img);
-  }
-
-  const imgPic = document.querySelector("#attraction__top__pic");
-  imgPic.src = imgs[0];
-
-  // const divPics = document.querySelector("#attraction__top__pics");
-  // divPics.style.backgroundImage = `url(${imgs[0]})`;
+  renderImgs(); // 初始顯示第一張圖片和初始化點點
 }
 
-// function getImgs(imgs) {
+// 圖片輪播
+const dots = document.querySelector("#attraction__top__pic__dots");
+const imgPic = document.querySelector("#attraction__top__pic");
+let i = 0;
 
-// }
+function renderImgs() {
+  imgPic.src = imgs[i];
+  renderDots();
+}
 
+function renderDots() {
+  dots.innerHTML = "";
+  for (let j = 0; j < imgs.length; j++) {
+    const spanDot = document.createElement("span");
+    spanDot.classList.add("dot");
+    dots.appendChild(spanDot);
+
+    if (j === i) {
+      const dot = document.querySelector(`.dot:nth-child(${i + 1})`);
+      // 同const dot = dots.children[j];
+      dot.classList.add("dot--active");
+    }
+  }
+}
+
+const nextBtn = document.querySelector("#attraction__top__pics__right-btn");
+const prevBtn = document.querySelector("#attraction__top__pics__left-btn");
+
+nextBtn.addEventListener("click", () => {
+  if (i < imgs.length - 1) {
+    i++;
+    renderImgs();
+  } else {
+    i = 0;
+    renderImgs();
+  }
+});
+
+prevBtn.addEventListener("click", () => {
+  if (i > 0) {
+    i--;
+    renderImgs();
+  } else {
+    i = imgs.length - 1;
+    renderImgs();
+  }
+});
+
+// 根據使用者選擇的導覽時間，切換到對應的導覽費用
 const allRadios = document.querySelectorAll("input[name='booking-time']");
 const spanPrice = document.querySelector("#booking-price");
-const morningPrce = "新台幣 2000 元";
+const morningPrice = "新台幣 2000 元";
 const afternoonPrice = "新台幣 2500 元";
 
 allRadios.forEach((radio) => {
   radio.addEventListener("change", (event) => {
     if (event.target.value === "morning") {
-      spanPrice.textContent = morningPrce;
+      spanPrice.textContent = morningPrice;
     } else {
       spanPrice.textContent = afternoonPrice;
     }

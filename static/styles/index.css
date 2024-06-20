@@ -123,6 +123,7 @@ main div.attraction .attraction-img-name-container img.img0 {
   position: relative;
   -o-object-fit: cover;
      object-fit: cover;
+  display: block;
 }
 main div.attraction .attraction-img-name-container .attraction__info__name {
   padding: 5px;
