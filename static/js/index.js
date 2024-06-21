@@ -35,19 +35,27 @@ async function loadAttractions() {
     const data2 = data.data;
 
     for (let i = 0; i < data2.length; i++) {
+      const id = data2[i].id;
       const name = data2[i].name;
       const category = data2[i].category;
       const mrt = data2[i].mrt;
       const img = data2[i].images[0];
-      console.log(img);
+      // console.log(img);
 
       const divAttraction = document.createElement("div"); // 創建一個新的div元素
       divAttraction.classList.add("attraction"); // 給新元素添加類別
       divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
 
+      // 添加a標籤
+      const aTag = document.createElement("a");
+      aTag.href = `/attraction/${id}`;
+      // 注意！backtick``符號位在鍵盤最左的位置，而非數字4的鍵位
+      divAttraction.appendChild(aTag);
+
       const divImgName = document.createElement("div");
       divImgName.classList.add("attraction-img-name-container");
-      divAttraction.appendChild(divImgName);
+      aTag.appendChild(divImgName);
+      // 為了要讓點擊此區塊時可以跳轉至景點個別頁面，改成上行：divAttraction.appendChild(divImgName);
 
       const imgAttraction = document.createElement("img");
       imgAttraction.classList.add("img0");
@@ -61,7 +69,8 @@ async function loadAttractions() {
 
       const divInfo = document.createElement("div");
       divInfo.classList.add("attraction__info");
-      divAttraction.appendChild(divInfo);
+      aTag.appendChild(divInfo);
+      // divAttraction.appendChild(divInfo);
 
       const infoMRT = document.createElement("div");
       infoMRT.classList.add("attraction__info__MRT");
@@ -109,6 +118,7 @@ async function loadMoreAttraction() {
     const data2 = data.data;
 
     for (let i = 0; i < data2.length; i++) {
+      const id = data2[i].id;
       const name = data2[i].name;
       const category = data2[i].category;
       const mrt = data2[i].mrt;
@@ -118,9 +128,16 @@ async function loadMoreAttraction() {
       divAttraction.classList.add("attraction"); // 給新元素添加類別
       divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
 
+      // 添加a標籤
+      const aTag = document.createElement("a");
+      aTag.href = `/attraction/${id}`;
+      // 注意！backtick``符號位在鍵盤最左的位置，而非數字4的鍵位
+      divAttraction.appendChild(aTag);
+
       const divImgName = document.createElement("div");
       divImgName.classList.add("attraction-img-name-container");
-      divAttraction.appendChild(divImgName);
+      aTag.appendChild(divImgName);
+      // 為了要讓點擊此區塊時可以跳轉至景點個別頁面，改成上行：divAttraction.appendChild(divImgName);
 
       const imgAttraction = document.createElement("img");
       imgAttraction.classList.add("img0");
@@ -134,7 +151,8 @@ async function loadMoreAttraction() {
 
       const divInfo = document.createElement("div");
       divInfo.classList.add("attraction__info");
-      divAttraction.appendChild(divInfo);
+      aTag.appendChild(divInfo);
+      // divAttraction.appendChild(divInfo);
 
       const infoMRT = document.createElement("div");
       infoMRT.classList.add("attraction__info__MRT");
@@ -162,6 +180,7 @@ document
   .querySelector("#banner__search__btn")
   .addEventListener("click", async () => {
     keyword = document.querySelector("#banner__search__keyword").value;
+
     try {
       const response = await fetch(
         `/api/attractions?keyword=${encodeURIComponent(keyword)}`
@@ -174,6 +193,7 @@ document
       divAttractions.innerHTML = "";
 
       for (let i = 0; i < data2.length; i++) {
+        const id = data2[i].id;
         const name = data2[i].name;
         const category = data2[i].category;
         const mrt = data2[i].mrt;
@@ -183,9 +203,16 @@ document
         divAttraction.classList.add("attraction"); // 給新元素添加類別
         divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
 
+        // 添加a標籤
+        const aTag = document.createElement("a");
+        aTag.href = `/attraction/${id}`;
+        // 注意！backtick``符號位在鍵盤最左的位置，而非數字4的鍵位
+        divAttraction.appendChild(aTag);
+
         const divImgName = document.createElement("div");
         divImgName.classList.add("attraction-img-name-container");
-        divAttraction.appendChild(divImgName);
+        aTag.appendChild(divImgName);
+        // 為了要讓點擊此區塊時可以跳轉至景點個別頁面，改成上行：divAttraction.appendChild(divImgName);
 
         const imgAttraction = document.createElement("img");
         imgAttraction.classList.add("img0");
@@ -199,7 +226,8 @@ document
 
         const divInfo = document.createElement("div");
         divInfo.classList.add("attraction__info");
-        divAttraction.appendChild(divInfo);
+        aTag.appendChild(divInfo);
+        // divAttraction.appendChild(divInfo);
 
         const infoMRT = document.createElement("div");
         infoMRT.classList.add("attraction__info__MRT");
@@ -264,6 +292,7 @@ async function loadMRTlist() {
           divAttractions.innerHTML = "";
 
           for (let i = 0; i < data2.length; i++) {
+            const id = data2[i].id;
             const name = data2[i].name;
             const category = data2[i].category;
             const mrt = data2[i].mrt;
@@ -273,9 +302,16 @@ async function loadMRTlist() {
             divAttraction.classList.add("attraction"); // 給新元素添加類別
             divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
 
+            // 添加a標籤
+            const aTag = document.createElement("a");
+            aTag.href = `/attraction/${id}`;
+            // 注意！backtick``符號位在鍵盤最左的位置，而非數字4的鍵位
+            divAttraction.appendChild(aTag);
+
             const divImgName = document.createElement("div");
             divImgName.classList.add("attraction-img-name-container");
-            divAttraction.appendChild(divImgName);
+            aTag.appendChild(divImgName);
+            // 為了要讓點擊此區塊時可以跳轉至景點個別頁面，改成上行：divAttraction.appendChild(divImgName);
 
             const imgAttraction = document.createElement("img");
             imgAttraction.classList.add("img0");
@@ -289,7 +325,8 @@ async function loadMRTlist() {
 
             const divInfo = document.createElement("div");
             divInfo.classList.add("attraction__info");
-            divAttraction.appendChild(divInfo);
+            aTag.appendChild(divInfo);
+            // divAttraction.appendChild(divInfo);
 
             const infoMRT = document.createElement("div");
             infoMRT.classList.add("attraction__info__MRT");
@@ -336,6 +373,7 @@ async function sendKeyword() {
     divAttractions.innerHTML = "";
 
     for (let i = 0; i < data2.length; i++) {
+      const id = data2[i].id;
       const name = data2[i].name;
       const category = data2[i].category;
       const mrt = data2[i].mrt;
@@ -345,9 +383,16 @@ async function sendKeyword() {
       divAttraction.classList.add("attraction"); // 給新元素添加類別
       divAttractions.appendChild(divAttraction); // 將新元素添加到容器中
 
+      // 添加a標籤
+      const aTag = document.createElement("a");
+      aTag.href = `/attraction/${id}`;
+      // 注意！backtick``符號位在鍵盤最左的位置，而非數字4的鍵位
+      divAttraction.appendChild(aTag);
+
       const divImgName = document.createElement("div");
       divImgName.classList.add("attraction-img-name-container");
-      divAttraction.appendChild(divImgName);
+      aTag.appendChild(divImgName);
+      // 為了要讓點擊此區塊時可以跳轉至景點個別頁面，改成上行：divAttraction.appendChild(divImgName);
 
       const imgAttraction = document.createElement("img");
       imgAttraction.classList.add("img0");
@@ -361,7 +406,8 @@ async function sendKeyword() {
 
       const divInfo = document.createElement("div");
       divInfo.classList.add("attraction__info");
-      divAttraction.appendChild(divInfo);
+      aTag.appendChild(divInfo);
+      // divAttraction.appendChild(divInfo);
 
       const infoMRT = document.createElement("div");
       infoMRT.classList.add("attraction__info__MRT");
@@ -390,12 +436,12 @@ const ulElement = document.querySelector("#mrt-bar__ul-container");
 // GPT & Phild
 function scrollToLeft() {
   console.log("往左");
-  ulElement.scrollBy({ left: -300, behavior: "smooth" });
+  ulElement.scrollBy({ left: -400, behavior: "smooth" });
 }
 
 function scrollRight() {
   console.log("往右");
-  ulElement.scrollBy({ left: 300, behavior: "smooth" });
+  ulElement.scrollBy({ left: 400, behavior: "smooth" });
 }
 
 // 在全域使用window.addEventListener可以選取全部的li標籤，但使用li.addEventListener不行，怪哉
