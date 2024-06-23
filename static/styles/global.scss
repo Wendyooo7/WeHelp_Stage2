@@ -4,6 +4,7 @@
   padding: 0;
   font-family: "Noto Sans TC", sans-serif;
   font-size: 16px;
+  color: rgb(102, 102, 102);
 }
 
 a {
@@ -49,6 +50,10 @@ header {
       .item {
         margin-left: 15px;
       }
+
+      #sign:hover {
+        cursor: pointer;
+      }
     }
   }
 }
@@ -59,4 +64,71 @@ footer {
   color: white;
   font-size: 16px;
   padding: 15px;
+}
+
+// 彈出視窗
+div.pop-up-dialog {
+  // display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.25);
+  text-align: center;
+
+  div#sign-in {
+    width: 340px;
+    background-color: white;
+    border-radius: 6px;
+    // position: absolute;
+    // top: 50px;
+    // left: 50%;
+    // transform: translate (-50%, 0);
+    margin: 60px auto;
+
+    div.sign__header {
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(rgb(102, 170, 187), rgb(51, 119, 136));
+    }
+
+    div#sign-in__main {
+      padding: 15px;
+
+      .sign__item__margin {
+        margin-bottom: 15px;
+      }
+
+      .sign__item__radius {
+        border-radius: 5px;
+        border: 1px solid rgb(204, 204, 204);
+      }
+
+      label.sign__label {
+        font-size: 24px;
+        font-weight: bold;
+        display: inline-block;
+      }
+
+      input.sign__input {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      button.sign__btn {
+        width: 100%;
+        font-size: 19px;
+        padding: 15px;
+        background-color: rgb(68, 136, 153);
+        color: white;
+        border: 1px solid transparent; //自定義邊框
+        outline: none;
+        // 以上兩行取消按鈕預設
+      }
+    }
+  }
 }

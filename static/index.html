@@ -22,10 +22,45 @@
         </div>
         <div class="right">
           <div class="item">預定行程</div>
-          <div class="item">登入／註冊</div>
+          <div id="sign" class="item">登入／註冊</div>
         </div>
       </nav>
     </header>
+
+    <div class="pop-up-dialog">
+      <div id="sign-in">
+        <div class="sign__header"></div>
+        <div id="sign-in__main">
+          <label for="sign-in" class="sign__label sign__item__margin"
+            >登入會員帳號</label
+          >
+          <br />
+          <input
+            name="email"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id=""
+            placeholder="輸入電子信箱"
+          />
+          <br />
+          <input
+            name="password"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id=""
+            placeholder="輸入密碼"
+          />
+          <br />
+          <button
+            class="sign__btn sign__item__margin sign__item__radius"
+            id="sign-in"
+          >
+            登入帳戶
+          </button>
+          <div>還沒有帳戶？<span>點此註冊</span></div>
+        </div>
+      </div>
+    </div>
 
     <div id="banner__img">
       <img

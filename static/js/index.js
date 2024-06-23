@@ -444,6 +444,14 @@ function scrollRight() {
   ulElement.scrollBy({ left: 400, behavior: "smooth" });
 }
 
+// 以下寫完要複製一份到attraction.js，這樣才景點頁也才能套用
+
+// 註冊用彈出視窗
+const signBtn = document.querySelector("#sign");
+signBtn.addEventListener("click", () => {
+  console.log(signBtn);
+});
+
 // 在全域使用window.addEventListener可以選取全部的li標籤，但使用li.addEventListener不行，怪哉
 // window.addEventListener("click", () => {
 //   const MRTlis = document.querySelectorAll(".mrt");
