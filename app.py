@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from passlib.context import CryptContext
 
 load_dotenv()
 DATABASE_HOST = os.getenv("DB_HOST")
@@ -36,6 +37,54 @@ async def booking(request: Request):
 @app.get("/thankyou", include_in_schema=False)
 async def thankyou(request: Request):
     return FileResponse("./static/thankyou.html", media_type="text/html")
+
+
+# Task 4
+@app.post("/api/user", response_model=dict)
+async def signup(request: Request):
+    data = await request.json()
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+
+    sql = "SELECT email FROM member WHERE email = %s"
+
+    try:
+        # 初始化連接
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor()
+
+        # 使用with確保在使用完畢後自動關閉
+        with cursor as mycursor:
+            mycursor.execute(sql, (email, ))
+            myresult = mycursor.fetchone()
+
+            if myresult == None:
+                sql = "INSERT INTO member (name, email, password) VALUES (%s, %s, %s)"
+                val = (name, email, password)
+                mycursor.execute(sql, val)
+                mydb.commit()
+                print(mycursor.rowcount, "record inserted.")
+                return JSONResponse(content={"ok": True}, status_code=200)
+            else:
+                return JSONResponse(content={
+                    "error": True,
+                    "message": "Email已經註冊帳戶"
+                },
+                                    status_code=400)
+
+    except Exception as err:
+        print(err)
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
 
 
 # Task 1-2

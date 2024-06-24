@@ -54,6 +54,7 @@ footer {
 }
 
 div.pop-up-dialog {
+  display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
@@ -64,38 +65,47 @@ div.pop-up-dialog {
   background-color: rgba(0, 0, 0, 0.25);
   text-align: center;
 }
-div.pop-up-dialog div#sign-in {
+div.pop-up-dialog div.sign-container {
   width: 340px;
   background-color: white;
   border-radius: 6px;
   margin: 60px auto;
 }
-div.pop-up-dialog div#sign-in div.sign__header {
+div.pop-up-dialog div.sign-container div.sign__header {
   width: 100%;
   height: 10px;
-  background: linear-gradient(rgb(102, 170, 187), rgb(51, 119, 136));
+  background: linear-gradient(to right, rgb(102, 170, 187), rgb(51, 119, 136));
 }
-div.pop-up-dialog div#sign-in div#sign-in__main {
+div.pop-up-dialog div.sign-container div.sign__main {
   padding: 15px;
+  position: relative;
 }
-div.pop-up-dialog div#sign-in div#sign-in__main .sign__item__margin {
+div.pop-up-dialog div.sign-container div.sign__main .sign__close-icon {
+  position: absolute;
+  top: 22px;
+  right: 15px;
+}
+div.pop-up-dialog div.sign-container div.sign__main .sign__close-icon:hover {
+  cursor: pointer;
+}
+div.pop-up-dialog div.sign-container div.sign__main .sign__item__margin {
   margin-bottom: 15px;
 }
-div.pop-up-dialog div#sign-in div#sign-in__main .sign__item__radius {
+div.pop-up-dialog div.sign-container div.sign__main .sign__item__radius {
   border-radius: 5px;
   border: 1px solid rgb(204, 204, 204);
 }
-div.pop-up-dialog div#sign-in div#sign-in__main label.sign__label {
+div.pop-up-dialog div.sign-container div.sign__main label.sign__label {
   font-size: 24px;
   font-weight: bold;
   display: inline-block;
 }
-div.pop-up-dialog div#sign-in div#sign-in__main input.sign__input {
+div.pop-up-dialog div.sign-container div.sign__main input.sign__input {
   width: 100%;
   padding: 15px;
   margin-bottom: 15px;
 }
-div.pop-up-dialog div#sign-in div#sign-in__main button.sign__btn {
+div.pop-up-dialog div.sign-container div.sign__main button.sign__btn {
   width: 100%;
   font-size: 19px;
   padding: 15px;
@@ -103,4 +113,19 @@ div.pop-up-dialog div#sign-in div#sign-in__main button.sign__btn {
   color: white;
   border: 1px solid transparent;
   outline: none;
+}
+
+button,
+span:hover {
+  cursor: pointer;
+}
+
+::-moz-placeholder {
+  color: rgb(117, 117, 117);
+  opacity: 1; /* Firefox */
+}
+
+::placeholder {
+  color: rgb(117, 117, 117);
+  opacity: 1; /* Firefox */
 }/*# sourceMappingURL=global.css.map */

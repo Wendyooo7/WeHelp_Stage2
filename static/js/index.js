@@ -1,3 +1,73 @@
+// 登入用彈出視窗
+const signBtn = document.querySelector("#sign");
+const signInModal = document.querySelector("#sign-in-modal");
+signBtn.addEventListener("click", () => {
+  signInModal.style.display = "block";
+});
+
+const closeSignInModal = document.querySelector("#sign-in__close-icon");
+closeSignInModal.addEventListener("click", () => {
+  signInModal.style.display = "none";
+});
+
+// 註冊用彈出視窗
+const signUpModal = document.querySelector("#sign-up-modal");
+const spanToSignUp = document.querySelector("#toSign-up-Modal");
+spanToSignUp.addEventListener("click", () => {
+  signInModal.style.display = "none";
+  signUpModal.style.display = "block";
+});
+
+const spanToSignIn = document.querySelector("#toSign-in-modal");
+spanToSignIn.addEventListener("click", () => {
+  signUpModal.style.display = "none";
+  signInModal.style.display = "block";
+});
+
+const closeSignUpModal = document.querySelector("#sign-up__close-icon");
+closeSignUpModal.addEventListener("click", () => {
+  signUpModal.style.display = "none";
+});
+
+// 送出註冊資料
+document.querySelector("#sign-up-btn").addEventListener("click", async () => {
+  const inputName = document.querySelector("#sign-in-name").value;
+  const inputEmail = document.querySelector("#sign-in-email").value;
+  const inputPassword = document.querySelector("#sign-in-password").value;
+  const signUpMsg = document.querySelector("#sign-up-msg");
+
+  try {
+    const response = await fetch("/api/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: inputName,
+        email: inputEmail,
+        password: inputPassword,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.ok) {
+      signUpMsg.textContent = "註冊成功，請登入系統";
+      signUpMsg.style.color = "green";
+      signUpMsg.className = "sign__item__margin";
+    } else if (data.error) {
+      signUpMsg.textContent = "Email已經註冊帳戶";
+      signUpMsg.style.color = "red";
+      signUpMsg.className = "sign__item__margin";
+    } else {
+      signUpMsg.textContent = "發生未知錯誤，請稍後再試";
+      signUpMsg.className = "sign__item__margin";
+    }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
+});
+
+// 以上寫完要複製一份到attraction.js，這樣才景點頁也才能套用
+
 const divAttractions = document.querySelector("#attractions");
 let nextPage;
 let lastAttraction;
@@ -443,14 +513,6 @@ function scrollRight() {
   console.log("往右");
   ulElement.scrollBy({ left: 400, behavior: "smooth" });
 }
-
-// 以下寫完要複製一份到attraction.js，這樣才景點頁也才能套用
-
-// 註冊用彈出視窗
-const signBtn = document.querySelector("#sign");
-signBtn.addEventListener("click", () => {
-  console.log(signBtn);
-});
 
 // 在全域使用window.addEventListener可以選取全部的li標籤，但使用li.addEventListener不行，怪哉
 // window.addEventListener("click", () => {
