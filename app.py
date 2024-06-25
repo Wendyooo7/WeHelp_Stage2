@@ -5,6 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from passlib.context import CryptContext
+import jwt
+from jwt.exceptions import InvalidTokenError
+from datetime import datetime, timedelta, timezone
 
 load_dotenv()
 DATABASE_HOST = os.getenv("DB_HOST")
@@ -14,38 +17,107 @@ DATABASE_NAME = os.getenv("DB_NAME")
 
 app = FastAPI()
 
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = 10800
+
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
-# Static Pages (Never Modify Code in this Block)
-@app.get("/", include_in_schema=False)
-async def index(request: Request):
-    return FileResponse("./static/index.html", media_type="text/html")
+# 初始化加密上下文
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-@app.get("/attraction/{id}", include_in_schema=False)
-async def attraction(request: Request, id: int):
-    return FileResponse("./static/attraction.html", media_type="text/html")
-
-
-@app.get("/booking", include_in_schema=False)
-async def booking(request: Request):
-    return FileResponse("./static/booking.html", media_type="text/html")
-
-
-@app.get("/thankyou", include_in_schema=False)
-async def thankyou(request: Request):
-    return FileResponse("./static/thankyou.html", media_type="text/html")
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(
+            timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
 # Task 4
+# 登入
+@app.put("/api/user/auth", response_model=dict)
+async def signup(request: Request):
+    data = await request.json()
+    print(data)
+
+    email = data.get("email")
+    password = data.get("password")
+
+    sql = "SELECT id, name, email, password FROM member WHERE email = %s"
+
+    try:
+        # 初始化連接
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor()
+
+        with cursor as mycursor:
+            mycursor.execute(sql, (email, ))
+            myresult = mycursor.fetchone()
+            print(myresult)
+
+            if not myresult:
+                return JSONResponse(content={
+                    "error": True,
+                    "message": "電子信箱輸入錯誤"
+                },
+                                    status_code=400)
+
+            user_id, name, email, stored_hashed_password = myresult
+            # 類似JS物件解構的概念{a, b, c} = d
+
+            if pwd_context.verify(password, stored_hashed_password):
+                access_token_expires = timedelta(
+                    minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+                access_token = create_access_token(
+                    data={
+                        "id": user_id,
+                        "name": name,
+                        "email": email
+                    },
+                    expires_delta=access_token_expires)
+
+                return JSONResponse(content={"token": access_token},
+                                    status_code=200)
+            else:
+                return JSONResponse(content={
+                    "error": True,
+                    "message": "密碼輸入錯誤"
+                },
+                                    status_code=400)
+    except Exception as err:
+        print(err)
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
+
+
+# 註冊
 @app.post("/api/user", response_model=dict)
 async def signup(request: Request):
     data = await request.json()
+    print(data)
+    # {'name': '�p��', 'email': 'flower@gmail.com', 'password': 'flower'}
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
+
+    # 使用加密上下文對密碼進行加密
+    hashed_password = pwd_context.hash(password)
+    print(hashed_password)
 
     sql = "SELECT email FROM member WHERE email = %s"
 
@@ -66,7 +138,7 @@ async def signup(request: Request):
 
             if myresult == None:
                 sql = "INSERT INTO member (name, email, password) VALUES (%s, %s, %s)"
-                val = (name, email, password)
+                val = (name, email, hashed_password)  # 使用加密後的密碼
                 mycursor.execute(sql, val)
                 mydb.commit()
                 print(mycursor.rowcount, "record inserted.")
@@ -128,10 +200,10 @@ async def page_keyword(request: Request,
 
                 for myresult in myresults:
                     images_original = myresult[9]
-                    print("images_original: ", images_original)
+                    # print("images_original: ", images_original)
                     images = images_original.split(',')
                     # 上行本來用images = [images]，改用Phild建議的方法看看是否會不同
-                    print("images: ", images)  # list，這樣一來要取出單張圖片應該就沒問題了！
+                    # print("images: ", images)  # list，這樣一來要取出單張圖片應該就沒問題了！
 
                     attraction = {
                         "id": myresult[0],
@@ -146,7 +218,7 @@ async def page_keyword(request: Request,
                         "images": images,
                     }
                     attractions.append(attraction)
-                    print(images)
+                    # print(images)
 
                 # 計算查詢總筆數
                 if keyword:
@@ -289,6 +361,27 @@ async def desc_mrt_count():
             mycursor.close()
         if mydb:
             mydb.close()
+
+
+# Static Pages (Never Modify Code in this Block)
+@app.get("/", include_in_schema=False)
+async def index(request: Request):
+    return FileResponse("./static/index.html", media_type="text/html")
+
+
+@app.get("/attraction/{id}", include_in_schema=False)
+async def attraction(request: Request, id: int):
+    return FileResponse("./static/attraction.html", media_type="text/html")
+
+
+@app.get("/booking", include_in_schema=False)
+async def booking(request: Request):
+    return FileResponse("./static/booking.html", media_type="text/html")
+
+
+@app.get("/thankyou", include_in_schema=False)
+async def thankyou(request: Request):
+    return FileResponse("./static/thankyou.html", media_type="text/html")
 
 
 if __name__ == "__main__":

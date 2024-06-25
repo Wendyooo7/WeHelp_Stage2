@@ -31,9 +31,9 @@ closeSignUpModal.addEventListener("click", () => {
 
 // 送出註冊資料
 document.querySelector("#sign-up-btn").addEventListener("click", async () => {
-  const inputName = document.querySelector("#sign-in-name").value;
-  const inputEmail = document.querySelector("#sign-in-email").value;
-  const inputPassword = document.querySelector("#sign-in-password").value;
+  const inputName = document.querySelector("#sign-up-name").value;
+  const inputEmail = document.querySelector("#sign-up-email").value;
+  const inputPassword = document.querySelector("#sign-up-password").value;
   const signUpMsg = document.querySelector("#sign-up-msg");
 
   try {
@@ -48,6 +48,8 @@ document.querySelector("#sign-up-btn").addEventListener("click", async () => {
     });
 
     const data = await response.json();
+    console.log(data); // 註冊成功會得到：{ok: true}
+    // 註冊失敗會得到：{error: true, message: 'Email已經註冊帳戶'}
 
     if (data.ok) {
       signUpMsg.textContent = "註冊成功，請登入系統";
@@ -66,6 +68,40 @@ document.querySelector("#sign-up-btn").addEventListener("click", async () => {
   }
 });
 
+// 送出登入資料
+document.querySelector("#sign-in-btn").addEventListener("click", async () => {
+  const inputEmail = document.querySelector("#sign-in-email").value;
+  const inputPassword = document.querySelector("#sign-in-password").value;
+  const signInMsg = document.querySelector("#sign-in-msg");
+
+  try {
+    const response = await fetch("/api/user/auth", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: inputEmail,
+        password: inputPassword,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data); // 註冊成功會得到：{ token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwibmFtZSI6Ilx1NWMwZlx1ODI3ZSIsImVtYWlsIjoibG92ZUBnbWFpbC5jb20iLCJleHAiOjE3MTk5MzY3Mjd9.QSzpuoVriQZ6Drx5e3ZN2bvYG2qAb2wm_UlzGNGr7RM" }
+    // 登入失敗會得到：{error: true, message: '電子信箱或密碼輸入錯誤'}
+
+    if (data.error) {
+      signInMsg.textContent = data.message;
+      signInMsg.style.color = "red";
+      signInMsg.className = "sign__item__margin";
+    } else {
+      signInMsg.textContent = "登入成功";
+      signInMsg.style.color = "green";
+      signInMsg.className = "sign__item__margin";
+      localStorage.setItem("token", data.token);
+    }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
+});
 // 以上寫完要複製一份到attraction.js，這樣才景點頁也才能套用
 
 const divAttractions = document.querySelector("#attractions");
