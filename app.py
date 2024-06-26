@@ -41,6 +41,30 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 
 # Task 4
+@app.get("/api/user/auth", response_model=dict)
+async def signup_status(request: Request):
+    token = request.headers.get("Authorization")
+    if token and token.startswith("Bearer "):
+        token = token[len("Bearer "):]
+    else:
+        return JSONResponse(content={"data": None}, status_code=200)
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("id")
+        name = payload.get("name")
+        email = payload.get("email")
+
+        if not user_id or not name or not email:
+            return JSONResponse(content={"data": None}, status_code=200)
+
+        response_data = {"data": {"id": user_id, "name": name, "email": email}}
+
+        return JSONResponse(content=response_data, status_code=200)
+    except InvalidTokenError:
+        return JSONResponse(content={"data": None}, status_code=200)
+
+
 # 登入
 @app.put("/api/user/auth", response_model=dict)
 async def signup(request: Request):

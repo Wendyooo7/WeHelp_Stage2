@@ -49,10 +49,10 @@ header {
 
       .item {
         margin-left: 15px;
-      }
 
-      #sign:hover {
-        cursor: pointer;
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
   }

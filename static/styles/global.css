@@ -41,7 +41,7 @@ header nav .right {
 header nav .right .item {
   margin-left: 15px;
 }
-header nav .right #sign:hover {
+header nav .right .item:hover {
   cursor: pointer;
 }
 

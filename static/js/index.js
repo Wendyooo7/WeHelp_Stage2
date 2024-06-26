@@ -1,5 +1,5 @@
 // 登入用彈出視窗
-const signBtn = document.querySelector("#sign");
+const signBtn = document.querySelector("#before-sign");
 const signInModal = document.querySelector("#sign-in-modal");
 signBtn.addEventListener("click", () => {
   signInModal.style.display = "block";
@@ -35,6 +35,11 @@ document.querySelector("#sign-up-btn").addEventListener("click", async () => {
   const inputEmail = document.querySelector("#sign-up-email").value;
   const inputPassword = document.querySelector("#sign-up-password").value;
   const signUpMsg = document.querySelector("#sign-up-msg");
+
+  if (!inputName || !inputEmail || !inputPassword) {
+    alert("請確認姓名、電子信箱和密碼都已填寫");
+    return; // 立即返回，阻止後續的fetch請求
+  }
 
   try {
     const response = await fetch("/api/user", {
@@ -74,6 +79,11 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
   const inputPassword = document.querySelector("#sign-in-password").value;
   const signInMsg = document.querySelector("#sign-in-msg");
 
+  if (!inputEmail || !inputPassword) {
+    alert("請確認電子信箱和密碼都已填寫");
+    return; // 立即返回，阻止後續的fetch請求
+  }
+
   try {
     const response = await fetch("/api/user/auth", {
       method: "PUT",
@@ -97,11 +107,58 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
       signInMsg.style.color = "green";
       signInMsg.className = "sign__item__margin";
       localStorage.setItem("token", data.token);
+      checkSignStatus();
     }
   } catch (err) {
     console.log("fetch err: ", err);
   }
 });
+
+async function checkSignStatus() {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const response = await fetch("/api/user/auth", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // 在 Authorization header 中攜帶 Bearer Token
+        },
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (data.data) {
+        // 已登入，更新 UI
+        updateUIForSignedInUser();
+      } else {
+        // 未登入，更新 UI
+        updateUIForSignedOutUser();
+      }
+    } catch (err) {
+      console.log("fetch err: ", err);
+    }
+  }
+}
+
+const unSigned = document.querySelector("#before-sign");
+const Signed = document.querySelector("#after-sign");
+function updateUIForSignedInUser() {
+  unSigned.textContent = "登出系統";
+  unSigned.id = "#after-sign";
+}
+
+Signed.addEventListener("click", () => {
+  updateUIForSignedOutUser();
+  localStorage.removeItem("token");
+});
+
+function updateUIForSignedOutUser() {
+  Signed.textContent = "登入／註冊";
+  unSigned.id = "#before-sign";
+}
+
 // 以上寫完要複製一份到attraction.js，這樣才景點頁也才能套用
 
 const divAttractions = document.querySelector("#attractions");
