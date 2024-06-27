@@ -24,6 +24,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 10800
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Task 4
 # 初始化加密上下文
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -61,8 +62,13 @@ async def signup_status(request: Request):
         response_data = {"data": {"id": user_id, "name": name, "email": email}}
 
         return JSONResponse(content=response_data, status_code=200)
+
     except InvalidTokenError:
-        return JSONResponse(content={"data": None}, status_code=200)
+        return JSONResponse(content={"error": "無效的Token"},
+                            status_code=401)  # Unauthorized
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)},
+                            status_code=500)  # Internal Server Error
 
 
 # 登入
