@@ -80,7 +80,7 @@ async def signup(request: Request):
     email = data.get("email")
     password = data.get("password")
 
-    sql = "SELECT id, name, email, password FROM member WHERE email = %s"
+    sql = "SELECT id, name, email, password FROM member WHERE BINARY email = %s"
 
     try:
         # 初始化連接
@@ -149,7 +149,7 @@ async def signup(request: Request):
     hashed_password = pwd_context.hash(password)
     print(hashed_password)
 
-    sql = "SELECT email FROM member WHERE email = %s"
+    sql = "SELECT email FROM member WHERE BINARY email = %s"
 
     try:
         # 初始化連接
