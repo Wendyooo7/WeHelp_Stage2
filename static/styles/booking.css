@@ -1,0 +1,100 @@
+main {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid red;
+}
+main div#main__greeting {
+  border: 1px solid black;
+  max-width: 1000px;
+  width: 100%;
+  margin: 30px 0;
+  font-weight: bold;
+}
+main div#main__booking__info__area {
+  max-width: 1000px;
+  width: 100%;
+  padding: 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  position: relative;
+  border: 1px solid blue;
+}
+main div#main__booking__info__area img#main__booking__info__delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+main div#main__booking__info__area img#main__booking__info__img {
+  width: 250px;
+  height: 200px;
+  background-color: aqua;
+  margin-right: 30px;
+}
+main div#main__booking__info__area div#main__booking__info {
+  width: 70%;
+  max-width: 700px;
+}
+main div#main__booking__info__area div#main__booking__info div#main__booking__info__attraction-name {
+  font-weight: bold;
+  color: rgb(68, 136, 153);
+  margin-bottom: 30px;
+}
+main div#main__booking__info__area div#main__booking__info div.main__booking__info__item {
+  margin-bottom: 10px;
+}
+
+hr {
+  width: 100%;
+  max-width: 1200px;
+  border: 1px solid rgb(232, 232, 232);
+  margin: 0 auto;
+}
+
+main div.main__block {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 10px;
+  margin: 30px 0;
+}
+main div.main__block__title {
+  font-weight: bold;
+  font-size: 19px;
+  margin-bottom: 15px;
+}
+main .main__block__labels,
+main .main__block__inputs,
+main .main__block__content {
+  margin-bottom: 15px;
+}
+main .main__block__inputs {
+  width: 20%;
+  border: 1px solid rgb(232, 232, 232);
+  border-radius: 5px;
+  padding: 10px;
+}
+main div#price-submit {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 10px;
+  text-align: end;
+  margin: 30px 0;
+}
+main div#price-submit .booking-btn {
+  text-align: end;
+  font-size: 19px;
+  width: 18%;
+  color: white;
+  background-color: rgb(68, 136, 153);
+  padding: 1% 2%;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 19px;
+  margin-left: auto;
+}
+
+.bold {
+  font-weight: bold;
+}/*# sourceMappingURL=booking.css.map */
