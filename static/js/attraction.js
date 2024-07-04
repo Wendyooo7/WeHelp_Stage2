@@ -1,3 +1,6 @@
+let attractionId;
+let time = "morning";
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOMContentLoaded");
   fetchAttractionID();
@@ -8,7 +11,7 @@ async function fetchAttractionID() {
   //   console.log(pathName); /attraction/7
   const pathParts = pathName.split("/");
   //   console.log(pathParts); Array(3) [ "", "attraction", "7" ]
-  const attractionId = pathParts[pathParts.length - 1]; // 取得url最後一部分作為 attractionId
+  attractionId = pathParts[pathParts.length - 1]; // 取得url最後一部分作為 attractionId
   const url = `/api/attraction/${attractionId}`;
 
   try {
@@ -111,10 +114,44 @@ const afternoonPrice = "新台幣 2500 元";
 
 allRadios.forEach((radio) => {
   radio.addEventListener("change", (event) => {
-    if (event.target.value === "morning") {
+    time = event.target.value;
+    if (time === "morning") {
       spanPrice.textContent = morningPrice;
     } else {
       spanPrice.textContent = afternoonPrice;
     }
   });
+});
+
+// Task 5
+document.querySelector("#booking-btn").addEventListener("click", async () => {
+  const date = document.querySelector("input[type='date']").value;
+
+  const priceText = spanPrice.textContent;
+  const priceTextSplit = priceText.split(" ");
+  const pricePart = priceTextSplit[1];
+
+  try {
+    const response = await fetch("/api/booking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        attractionId: Number(attractionId),
+        date: date,
+        time: time,
+        price: Number(pricePart),
+      }),
+    });
+
+    const data = await response.json();
+    if (data.ok) {
+      updateName.textContent = "更新成功";
+    } else if (data.error) {
+      updateName.textContent = "更新失敗";
+    } else {
+      updateName.textContent = "發生未知錯誤，請稍後再試";
+    }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
 });

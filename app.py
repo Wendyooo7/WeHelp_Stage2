@@ -41,6 +41,41 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
+# Task 5
+@app.post("/api/booking", response_model=dict)
+async def book_a_tour(request: Request):
+    token = request.headers.get("Authorization")
+
+    if token and token.startswith("Bearer "):
+        token = token[len("Bearer "):]
+    else:
+        return JSONResponse(content={
+            "error": True,
+            "message": "未登入系統，拒絕存取"
+        },
+                            status_code=403)
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("id")
+        name = payload.get("name")
+        email = payload.get("email")
+
+        if not user_id or not name or not email:
+            return JSONResponse(content={
+                "error": True,
+                "message": "未登入系統，拒絕存取"
+            },
+                                status_code=403)
+
+    except InvalidTokenError:
+        return JSONResponse(content={"error": "無效的Token"},
+                            status_code=401)  # Unauthorized
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)},
+                            status_code=500)  # Internal Server Error
+
+
 # Task 4
 @app.get("/api/user/auth", response_model=dict)
 async def signup_status(request: Request):
