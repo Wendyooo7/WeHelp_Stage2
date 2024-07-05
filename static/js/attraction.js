@@ -130,11 +130,15 @@ document.querySelector("#booking-btn").addEventListener("click", async () => {
   const priceText = spanPrice.textContent;
   const priceTextSplit = priceText.split(" ");
   const pricePart = priceTextSplit[1];
+  const token = localStorage.getItem("token");
 
   try {
     const response = await fetch("/api/booking", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         attractionId: Number(attractionId),
         date: date,
@@ -144,12 +148,10 @@ document.querySelector("#booking-btn").addEventListener("click", async () => {
     });
 
     const data = await response.json();
-    if (data.ok) {
-      updateName.textContent = "更新成功";
-    } else if (data.error) {
-      updateName.textContent = "更新失敗";
+    if (data.error) {
+      console.log("Error:", data.message);
     } else {
-      updateName.textContent = "發生未知錯誤，請稍後再試";
+      console.log("Booking successful:", data);
     }
   } catch (err) {
     console.log("fetch err: ", err);

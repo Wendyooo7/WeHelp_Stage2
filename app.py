@@ -1,7 +1,7 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from passlib.context import CryptContext
@@ -29,6 +29,24 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+class AuthException(Exception):
+
+    def __init__(self, message: str, status_code: int):
+        self.message = message
+        self.status_code = status_code
+
+
+@app.exception_handler(AuthException)
+async def auth_exception_handler(request: Request, exc: AuthException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": True,
+            "message": exc.message
+        },
+    )
+
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -41,19 +59,14 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-# Task 5
-@app.post("/api/booking", response_model=dict)
-async def book_a_tour(request: Request):
+def get_user_status(request: Request):
     token = request.headers.get("Authorization")
 
     if token and token.startswith("Bearer "):
+        # if not token or not token.startswith("Bearer "):
         token = token[len("Bearer "):]
     else:
-        return JSONResponse(content={
-            "error": True,
-            "message": "未登入系統，拒絕存取"
-        },
-                            status_code=403)
+        raise AuthException("未登入系統，拒絕存取", 403)
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -62,18 +75,60 @@ async def book_a_tour(request: Request):
         email = payload.get("email")
 
         if not user_id or not name or not email:
-            return JSONResponse(content={
-                "error": True,
-                "message": "未登入系統，拒絕存取"
-            },
-                                status_code=403)
+            raise AuthException("未登入系統，拒絕存取", 403)
 
-    except InvalidTokenError:
-        return JSONResponse(content={"error": "無效的Token"},
-                            status_code=401)  # Unauthorized
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)},
-                            status_code=500)  # Internal Server Error
+        return user_id
+
+    # except InvalidTokenError:
+    #     raise AuthException("無效的Token", 401)
+    except Exception as err:
+        raise AuthException(f"內部伺服器或與資料庫連接錯誤: {str(err)}", 500)
+
+
+# Task 5
+@app.post("/api/booking", response_model=dict)
+async def book_a_tour(request: Request,
+                      user_id: int = Depends(get_user_status)):
+    data = await request.json()
+    attraction_id = data.get("attractionId")
+    date = data.get("date")
+    time = data.get("time")
+    price = data.get("price")
+
+    if not attraction_id or not date or not time or not price:
+        return JSONResponse(content={
+            "error": True,
+            "message": "建立失敗，輸入不正確或其他原因"
+        },
+                            status_code=400)
+
+    sql = """
+    INSERT INTO booking (user_id, attraction_id, date, time, price)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+
+    try:
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor()
+
+        with cursor as mycursor:
+            mycursor.execute(sql, (user_id, attraction_id, date, time, price))
+            mydb.commit()
+            print(mycursor.rowcount, "record inserted.")
+
+        return JSONResponse(content={"ok": True}, status_code=200)
+
+    except Exception as err:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
 
 
 # Task 4
