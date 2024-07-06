@@ -99,6 +99,9 @@ main #attraction__top #attraction__top__info #attraction__top__info__booking__ar
   text-align: center;
   line-height: 32px;
 }
+main #attraction__top #attraction__top__info #attraction__top__info__booking__area #booking-btn:hover {
+  cursor: pointer;
+}
 main #attraction__bottom {
   max-width: 1200px;
   width: 100%;

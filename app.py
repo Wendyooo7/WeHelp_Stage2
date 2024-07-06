@@ -59,6 +59,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
+# token = None
+
+
 def get_user_status(request: Request):
     token = request.headers.get("Authorization")
 
@@ -86,9 +89,93 @@ def get_user_status(request: Request):
 
 
 # Task 5
+@app.get("/api/booking", response_model=dict)
+async def check_my_tour(request: Request,
+                        user_id: int = Depends(get_user_status)):
+
+    if not user_id:
+        return JSONResponse(content={
+            "error": True,
+            "message": "未登入系統，拒絕存取"
+        },
+                            status_code=403)
+
+    sql = """
+    SELECT attraction.id, attraction.name, attraction.address, attraction.image, booking.date, booking.time, booking.price
+    FROM booking
+    WHERE booking.user_id = %s
+    JOIN  attraction ON attraction.id = booking.attraction_id;
+    """
+
+    try:
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor(dictionary=True)
+
+        with cursor as mycursor:
+            mycursor.execute(sql, (user_id, ))
+            results = mycursor.fetchall()
+
+        # response_data = {
+        #     "data": {
+        #         "attraction": {
+        #             "id": attraction.id,
+        #             "name": attraction.name,
+        #             "address": attraction.address,
+        #             "image": attraction.image
+        #         },
+        #         "date": booking.date,
+        #         "time": booking.time,
+        #         "price": booking.price
+        #     }
+        # }
+        return JSONResponse(content=results, status_code=200)
+
+    except Exception as err:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
+
+
+@app.delete("/api/booking", response_model=dict)
+async def delete_my_tour(request: Request,
+                         user_id: int = Depends(get_user_status)):
+    sql = "DELETE FROM booking WHERE id = %s"
+
+    try:
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor()
+
+        with cursor as mycursor:
+            mycursor.execute(sql, (user_id, ))
+            mydb.commit()
+
+            if mycursor.rowcount != 0:
+                return JSONResponse(content={"ok": True}, status_code=200)
+
+    except Exception as err:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
+
+
 @app.post("/api/booking", response_model=dict)
-async def book_a_tour(request: Request,
-                      user_id: int = Depends(get_user_status)):
+async def book_my_tour(request: Request,
+                       user_id: int = Depends(get_user_status)):
+
     data = await request.json()
     attraction_id = data.get("attractionId")
     date = data.get("date")

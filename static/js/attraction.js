@@ -2,7 +2,6 @@ let attractionId;
 let time = "morning";
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOMContentLoaded");
   fetchAttractionID();
 });
 
@@ -123,37 +122,37 @@ allRadios.forEach((radio) => {
   });
 });
 
-// Task 5
-document.querySelector("#booking-btn").addEventListener("click", async () => {
-  const date = document.querySelector("input[type='date']").value;
+// // Task 5
+// document.querySelector("#booking-btn").addEventListener("click", async () => {
+//   const date = document.querySelector("input[type='date']").value;
 
-  const priceText = spanPrice.textContent;
-  const priceTextSplit = priceText.split(" ");
-  const pricePart = priceTextSplit[1];
-  const token = localStorage.getItem("token");
+//   const priceText = spanPrice.textContent;
+//   const priceTextSplit = priceText.split(" ");
+//   const pricePart = priceTextSplit[1];
 
-  try {
-    const response = await fetch("/api/booking", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        attractionId: Number(attractionId),
-        date: date,
-        time: time,
-        price: Number(pricePart),
-      }),
-    });
+//   try {
+//     const token = localStorage.getItem("token");
+//     const response = await fetch("/api/booking", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         attractionId: Number(attractionId),
+//         date: date,
+//         time: time,
+//         price: Number(pricePart),
+//       }),
+//     });
 
-    const data = await response.json();
-    if (data.error) {
-      console.log("Error:", data.message);
-    } else {
-      console.log("Booking successful:", data);
-    }
-  } catch (err) {
-    console.log("fetch err: ", err);
-  }
-});
+//     const data = await response.json();
+//     if (data.error) {
+//       console.log("Error:", data.message);
+//     } else {
+//       console.log("Booking successful:", data);
+//     }
+//   } catch (err) {
+//     console.log("fetch err: ", err);
+//   }
+// });

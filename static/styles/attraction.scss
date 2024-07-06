@@ -131,6 +131,10 @@ main {
           line-height: 32px;
           // max-height: 42.81px;
           // 即便連btn一起處理，btn的文字還是會溢出，因為空間不夠
+
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
     }

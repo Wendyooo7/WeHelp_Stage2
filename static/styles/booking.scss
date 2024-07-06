@@ -35,6 +35,10 @@ main {
       position: absolute;
       top: 0;
       right: 0;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     img#main__booking__info__img {

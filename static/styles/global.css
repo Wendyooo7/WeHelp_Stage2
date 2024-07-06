@@ -116,7 +116,8 @@ div.pop-up-dialog div.sign-container div.sign__main button.sign__btn {
 }
 
 button,
-span:hover {
+span#toSign-up-Modal,
+span#toSign-in-modal:hover {
   cursor: pointer;
 }
 

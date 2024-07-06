@@ -27,6 +27,9 @@ main div#main__booking__info__area img#main__booking__info__delete {
   top: 0;
   right: 0;
 }
+main div#main__booking__info__area img#main__booking__info__delete:hover {
+  cursor: pointer;
+}
 main div#main__booking__info__area img#main__booking__info__img {
   width: 250px;
   height: 200px;

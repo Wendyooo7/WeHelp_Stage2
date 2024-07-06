@@ -1,3 +1,5 @@
+const bookingBtnNav = document.querySelector("#nav-booking-btn");
+const bookingBtnMain = document.querySelector("#booking-btn");
 const signStatusBtn = document.querySelector("#sign-status-btn");
 const signInModal = document.querySelector("#sign-in-modal");
 
@@ -15,6 +17,47 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("token");
     } else {
       // 若未登入，顯示登入彈出視窗
+      signInModal.style.display = "block";
+    }
+  });
+
+  bookingBtnNav.addEventListener("click", () => {
+    if (localStorage.getItem("token")) {
+      window.location.href = "http://127.0.0.1:8000/booking";
+    } else {
+      signInModal.style.display = "block";
+    }
+  });
+
+  bookingBtnMain.addEventListener("click", async () => {
+    if (localStorage.getItem("token")) {
+      const date = document.querySelector("input[type='date']").value;
+      const priceText = spanPrice.textContent;
+      const priceTextSplit = priceText.split(" ");
+      const pricePart = priceTextSplit[1];
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch("/api/booking", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            attractionId: Number(attractionId),
+            date: date,
+            time: time,
+            price: Number(pricePart),
+          }),
+        });
+
+        const data = await response.json();
+      } catch (err) {
+        console.log("fetch err: ", err);
+      }
+      window.location.href = "http://127.0.0.1:8000/booking";
+    } else {
       signInModal.style.display = "block";
     }
   });
