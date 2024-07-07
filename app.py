@@ -100,11 +100,18 @@ async def check_my_tour(request: Request,
         },
                             status_code=403)
 
+    # sql = """
+    # SELECT attraction.id, attraction.name, attraction.address, attraction.image, booking.date, booking.time, booking.price
+    # FROM booking
+    # WHERE booking.user_id = %s
+    # JOIN attraction ON booking.attraction_id = attraction.id  ;
+    # """
     sql = """
-    SELECT attraction.id, attraction.name, attraction.address, attraction.image, booking.date, booking.time, booking.price
+    SELECT attraction.id AS attraction_id, attraction.name, attraction.address, attraction.images, 
+           booking.date, booking.time, booking.price
     FROM booking
-    WHERE booking.user_id = %s
-    JOIN  attraction ON attraction.id = booking.attraction_id;
+    JOIN attraction ON booking.attraction_id = attraction.id
+    WHERE booking.user_id = %s;
     """
 
     try:
@@ -118,7 +125,16 @@ async def check_my_tour(request: Request,
 
         with cursor as mycursor:
             mycursor.execute(sql, (user_id, ))
-            results = mycursor.fetchall()
+            result = mycursor.fetchone()
+
+        if not result:
+            return JSONResponse(content={"data": None}, status_code=200)
+
+        # 將日期對象轉換成字符串格式
+        result["date"] = result["date"].strftime("%Y-%m-%d")
+
+        # 取出第一張圖片
+        result["images"] = result["images"].split(",")[0]
 
         # response_data = {
         #     "data": {
@@ -133,7 +149,23 @@ async def check_my_tour(request: Request,
         #         "price": booking.price
         #     }
         # }
-        return JSONResponse(content=results, status_code=200)
+
+        response_data = {
+            "data": {
+                "attraction": {
+                    "id": result["attraction_id"],
+                    "name": result["name"],
+                    "address": result["address"],
+                    "image": result["images"]
+                },
+                "date": result["date"],
+                "time": result["time"],
+                "price": result["price"]
+            }
+        }
+
+        print(response_data)
+        return JSONResponse(content=response_data, status_code=200)
 
     except Exception as err:
         return JSONResponse(content={
@@ -146,7 +178,7 @@ async def check_my_tour(request: Request,
 @app.delete("/api/booking", response_model=dict)
 async def delete_my_tour(request: Request,
                          user_id: int = Depends(get_user_status)):
-    sql = "DELETE FROM booking WHERE id = %s"
+    sql = "DELETE FROM booking WHERE user_id = %s"
 
     try:
         mydb = mysql.connector.connect(host=DATABASE_HOST,
@@ -175,6 +207,13 @@ async def delete_my_tour(request: Request,
 @app.post("/api/booking", response_model=dict)
 async def book_my_tour(request: Request,
                        user_id: int = Depends(get_user_status)):
+
+    if not user_id:
+        return JSONResponse(content={
+            "error": True,
+            "message": "未登入系統，拒絕存取"
+        },
+                            status_code=403)
 
     data = await request.json()
     attraction_id = data.get("attractionId")

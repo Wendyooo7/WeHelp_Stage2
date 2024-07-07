@@ -1,6 +1,10 @@
 $theme-color: rgb(68, 136, 153);
 $decorate-color: rgb(232, 232, 232);
 
+#booking-main {
+  display: none;
+}
+
 main {
   display: flex;
   // justify-content: center;
@@ -44,7 +48,6 @@ main {
     img#main__booking__info__img {
       width: 250px;
       height: 200px;
-      background-color: aqua;
       margin-right: 30px;
     }
 
@@ -127,27 +130,8 @@ main {
   font-weight: bold;
 }
 
-// // 使用偽元素作分隔線，未完
-// body {
-//   main {
-//     div.main__block {
-//       position: relative; // 設定為 relative，以便伪元素正確定位
-//       // padding-bottom: 10px; // 底部內邊距，用來分隔項目
-//       width: 100%; // 确保 main__block 占据可用宽度
-
-//       &::after {
-//         content: "";
-//         display: block;
-//         width: 1200px !important;
-//         // height: 1px; // 设置分隔线的高度
-//         background-color: $decorate-color; // 设置分隔线的颜色
-//         margin: 0 auto; // 使用 auto 水平居中分隔线
-//         padding-bottom: 30px;
-//       }
-
-//       &:last-child::after {
-//         content: none; // 移除最后一个item后的分隔线
-//       }
-//     }
-//   }
-// }
+#main__no-booking-data {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 62vh;
+}

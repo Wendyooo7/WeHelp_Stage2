@@ -26,8 +26,8 @@
       </nav>
     </header>
 
-    <main>
-      <div id="main__greeting">您好，使用者姓名，待預定的行程如下：</div>
+    <main id="booking-main">
+      <div id="main__greeting"></div>
       <div id="main__booking__info__area">
         <img id="main__booking__info__img" src="" />
         <img
@@ -35,21 +35,23 @@
           src="/static/styles/images/booking_delete.png"
         />
         <div id="main__booking__info">
-          <div id="main__booking__info__attraction-name">
-            台北一日遊：景點名稱
-          </div>
-          <div id="main__booking__info__date" class="main__booking__info__item">
-            <strong>日期：</strong>
-          </div>
-          <div id="main__booking__info__date" class="main__booking__info__item">
-            <strong>時間：</strong>
-          </div>
-          <div id="main__booking__info__date" class="main__booking__info__item">
-            <strong>費用：</strong>
-          </div>
-          <div id="main__booking__info__date" class="main__booking__info__item">
-            <strong>地點：</strong>
-          </div>
+          <div id="main__booking__info__attraction-name"></div>
+          <div
+            id="main__booking__info__date"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__time"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__fee"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__address"
+            class="main__booking__info__item"
+          ></div>
         </div>
       </div>
       <hr />
@@ -57,10 +59,20 @@
       <div class="main__block" id="order-info">
         <div class="main__block__title">您的聯絡資訊</div>
         <label for="name" class="main__block__labels">聯絡姓名：</label>
-        <input type="text" name="name" class="main__block__inputs" />
+        <input
+          id="order-info__name"
+          type="text"
+          name="name"
+          class="main__block__inputs"
+        />
         <br />
         <label for="email" class="main__block__labels">聯絡信箱：</label>
-        <input type="text" name="email" class="main__block__inputs" />
+        <input
+          id="order-info__email"
+          type="text"
+          name="email"
+          class="main__block__inputs"
+        />
         <br />
         <label for="phone-number" class="main__block__label">手機號碼：</label>
         <input type="text" name="phone-number" class="main__block__inputs" />

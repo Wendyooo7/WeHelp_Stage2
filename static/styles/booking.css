@@ -1,3 +1,7 @@
+#booking-main {
+  display: none;
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
@@ -33,7 +37,6 @@ main div#main__booking__info__area img#main__booking__info__delete:hover {
 main div#main__booking__info__area img#main__booking__info__img {
   width: 250px;
   height: 200px;
-  background-color: aqua;
   margin-right: 30px;
 }
 main div#main__booking__info__area div#main__booking__info {
@@ -100,4 +103,10 @@ main div#price-submit .booking-btn {
 
 .bold {
   font-weight: bold;
+}
+
+#main__no-booking-data {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 62vh;
 }/*# sourceMappingURL=booking.css.map */
