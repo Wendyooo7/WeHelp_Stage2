@@ -150,14 +150,13 @@ bookingBtnMain.addEventListener("click", async () => {
 
       const data = await response.json();
       if (data.ok) {
-        console.log("建立成功");
+        window.location.href = "http://127.0.0.1:8000/booking";
       } else {
         console.log(data.message);
       }
     } catch (err) {
       console.log("fetch err: ", err);
     }
-    window.location.href = "http://127.0.0.1:8000/booking";
   } else {
     signInModal.style.display = "block";
   }

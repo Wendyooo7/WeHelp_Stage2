@@ -228,10 +228,7 @@ async def book_my_tour(request: Request,
         },
                             status_code=400)
 
-    sql = """
-    INSERT INTO booking (user_id, attraction_id, date, time, price)
-    VALUES (%s, %s, %s, %s, %s)
-    """
+    sql = "SELECT * FROM booking WHERE user_id = %s"
 
     try:
         mydb = mysql.connector.connect(host=DATABASE_HOST,
@@ -243,11 +240,29 @@ async def book_my_tour(request: Request,
         cursor = mydb.cursor()
 
         with cursor as mycursor:
-            mycursor.execute(sql, (user_id, attraction_id, date, time, price))
+            mycursor.execute(sql, (user_id, ))
+            myresult = mycursor.fetchone()
+            print(myresult)
+
+            if not myresult:
+                sql = """
+    INSERT INTO booking (user_id, attraction_id, date, time, price)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+                mycursor.execute(sql,
+                                 (user_id, attraction_id, date, time, price))
+            else:
+                sql = """
+    UPDATE booking 
+    SET attraction_id=%s, date=%s, time=%s, price=%s
+    WHERE user_id=%s
+    """
+                mycursor.execute(sql,
+                                 (attraction_id, date, time, price, user_id))
             mydb.commit()
             print(mycursor.rowcount, "record inserted.")
 
-        return JSONResponse(content={"ok": True}, status_code=200)
+            return JSONResponse(content={"ok": True}, status_code=200)
 
     except Exception as err:
         return JSONResponse(content={

@@ -1,6 +1,3 @@
-let loginName;
-let loginEmail;
-
 const bookingBtnNav = document.querySelector("#nav-booking-btn");
 const signStatusBtn = document.querySelector("#sign-status-btn");
 const signInModal = document.querySelector("#sign-in-modal");
@@ -17,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // 若已登入，點擊按鈕執行登出
       updateUIForSignedOutUser();
       localStorage.removeItem("token");
+      // window.location.reload();
     } else {
       // 若未登入，顯示登入彈出視窗
       signInModal.style.display = "block";
@@ -134,6 +132,7 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
       signInMsg.style.color = "green";
       signInMsg.className = "sign__item__margin";
       localStorage.setItem("token", data.token);
+      window.location.reload();
       checkSignStatus();
     }
   } catch (err) {
@@ -141,6 +140,7 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
   }
 });
 
+// 檢查登入狀態
 async function checkSignStatus() {
   const token = localStorage.getItem("token");
   if (token) {
@@ -158,8 +158,8 @@ async function checkSignStatus() {
       if (data.data) {
         // 已登入，更新 UI
         updateUIForSignedInUser();
-        loginName = data.data.name;
-        loginEmail = data.data.email;
+        // loginName = data.data.name;
+        // loginEmail = data.data.email;
       } else {
         // 未登入，更新 UI
         updateUIForSignedOutUser();

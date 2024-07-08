@@ -1,7 +1,36 @@
-const main = document.querySelector("#booking-main");
-document.addEventListener("DOMContentLoaded", () => {
-  fetchToGetMyTour();
-});
+let loginName;
+let loginEmail;
+
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.replace("http://127.0.0.1:8000/");
+} else {
+  document.addEventListener("DOMContentLoaded", () => {
+    getNameAndEmail();
+    fetchToGetMyTour();
+  });
+}
+
+async function getNameAndEmail() {
+  try {
+    const response = await fetch("/api/user/auth", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 在 Authorization header 中攜帶 Bearer Token
+      },
+    });
+
+    const data = await response.json();
+    if (data.data) {
+      loginName = data.data.name;
+      loginEmail = data.data.email;
+    }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
+}
 
 const sayHiToOrderer = document.querySelector("#main__greeting");
 const tourName = document.querySelector(
@@ -27,7 +56,6 @@ async function fetchToGetMyTour() {
   });
 
   const data = await response.json();
-  console.log(data);
   if (!data.data) {
     main.innerHTML = `<div id="main__greeting">您好，${loginName}，待預定的行程如下：</div>
        <div id="main__no-booking-data">目前沒有任何待預定的行程</div>`;
@@ -67,6 +95,20 @@ function renderTourFeeContent(dataFee) {
     tourFee.innerHTML = "<strong>費用：</strong>新台幣 2500 元";
   }
 }
+
+const bookingBtnNav = document.querySelector("#nav-booking-btn");
+const signStatusBtn = document.querySelector("#sign-status-btn");
+const main = document.querySelector("#booking-main");
+
+bookingBtnNav.addEventListener("click", () => {
+  window.location.reload();
+});
+
+signStatusBtn.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  signStatusBtn.textContent = "登入／註冊";
+  window.location.href = "http://127.0.0.1:8000/";
+});
 
 document
   .querySelector("#main__booking__info__delete")
