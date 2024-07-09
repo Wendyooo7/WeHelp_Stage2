@@ -6,10 +6,10 @@ const token = localStorage.getItem("token");
 if (!token) {
   window.location.replace("/");
 } else {
-  document.addEventListener("DOMContentLoaded", () => {
-    getNameAndEmail();
-    fetchToGetMyTour();
-  });
+  // document.addEventListener("DOMContentLoaded", () => {
+  getNameAndEmail();
+  fetchToGetMyTour();
+  // });
 }
 
 async function getNameAndEmail() {
