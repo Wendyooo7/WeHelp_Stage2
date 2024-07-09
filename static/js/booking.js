@@ -43,6 +43,7 @@ const tourAddress = document.querySelector("#main__booking__info__address");
 const tourImg = document.querySelector("#main__booking__info__img");
 const ordererName = document.querySelector("#order-info__name");
 const ordererEmail = document.querySelector("#order-info__email");
+const submitPrice = document.querySelector("#price-submit__price");
 
 async function fetchToGetMyTour() {
   const token = localStorage.getItem("token");
@@ -91,8 +92,10 @@ function renderTourTimeContent(dataTime) {
 function renderTourFeeContent(dataFee) {
   if (dataFee === 2000) {
     tourFee.innerHTML = "<strong>費用：</strong>新台幣 2000 元";
+    submitPrice.innerHTML = "<strong>總價：新台幣 2000 元</strong>";
   } else {
     tourFee.innerHTML = "<strong>費用：</strong>新台幣 2500 元";
+    submitPrice.innerHTML = "<strong>總價：新台幣 2500 元</strong>";
   }
 }
 

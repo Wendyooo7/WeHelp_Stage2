@@ -14,14 +14,13 @@ main {
   // margin: 0 auto;
   flex-direction: column;
   align-items: center;
-  border: 1px solid red;
 
   div#main__greeting {
-    border: 1px solid black;
     max-width: 1000px;
     // padding: 0 100px;
     width: 100%;
     margin: 30px 0;
+    padding: 0 10px;
     font-weight: bold;
   }
 
@@ -32,18 +31,6 @@ main {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 30px;
-    position: relative;
-    border: 1px solid blue;
-
-    img#main__booking__info__delete {
-      position: absolute;
-      top: 0;
-      right: 0;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
 
     img#main__booking__info__img {
       width: 250px;
@@ -54,6 +41,17 @@ main {
     div#main__booking__info {
       width: 70%;
       max-width: 700px;
+      position: relative;
+
+      img#main__booking__info__delete {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
 
       div#main__booking__info__attraction-name {
         font-weight: bold;
@@ -98,7 +96,7 @@ main {
   }
 
   .main__block__inputs {
-    width: 20%;
+    width: 25%;
     border: 1px solid $decorate-color;
     border-radius: 5px;
     padding: 10px;
@@ -112,7 +110,6 @@ main {
     margin: 30px 0;
 
     .booking-btn {
-      text-align: end;
       font-size: 19px;
       width: 18%;
       color: white;
@@ -134,4 +131,75 @@ main {
   width: 100%;
   max-width: 1000px;
   margin-bottom: 62vh;
+  padding: 0 10px;
+}
+
+@media (min-width: 655px) and (max-width: 975px) {
+  main {
+    div#main__booking__info__area {
+      img#main__booking__info__img {
+        width: 100%;
+        height: 450px;
+        object-fit: cover;
+        margin-right: 0;
+      }
+
+      div#main__booking__info {
+        width: 100%;
+        max-width: 100vw;
+
+        div#main__booking__info__attraction-name {
+          margin: 30px 0;
+        }
+
+        img#main__booking__info__delete {
+          top: auto;
+          bottom: -10%;
+        }
+      }
+    }
+
+    div#price-submit {
+      .booking-btn {
+        width: 25%;
+      }
+    }
+  }
+}
+
+@media (min-width: 360px) and (max-width: 654px) {
+  main {
+    div#main__booking__info__area {
+      img#main__booking__info__img {
+        width: 100%;
+        height: 225px;
+        object-fit: cover;
+        margin-right: 0;
+      }
+
+      div#main__booking__info {
+        width: 100%;
+        max-width: 100vw;
+
+        div#main__booking__info__attraction-name {
+          margin: 30px 0;
+        }
+
+        img#main__booking__info__delete {
+          top: auto;
+          bottom: -10%;
+        }
+      }
+    }
+
+    div#price-submit {
+      .booking-btn {
+        width: 45%;
+      }
+    }
+
+    .main__block__inputs {
+      width: 50%;
+    }
+  }
 }
