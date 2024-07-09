@@ -150,7 +150,7 @@ bookingBtnMain.addEventListener("click", async () => {
 
       const data = await response.json();
       if (data.ok) {
-        window.location.href = "http://127.0.0.1:8000/booking";
+        window.location.href = "/booking";
       } else {
         console.log(data.message);
       }
@@ -161,38 +161,3 @@ bookingBtnMain.addEventListener("click", async () => {
     signInModal.style.display = "block";
   }
 });
-
-// // Task 5
-// document.querySelector("#booking-btn").addEventListener("click", async () => {
-//   const date = document.querySelector("input[type='date']").value;
-
-//   const priceText = spanPrice.textContent;
-//   const priceTextSplit = priceText.split(" ");
-//   const pricePart = priceTextSplit[1];
-
-//   try {
-//     const token = localStorage.getItem("token");
-//     const response = await fetch("/api/booking", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({
-//         attractionId: Number(attractionId),
-//         date: date,
-//         time: time,
-//         price: Number(pricePart),
-//       }),
-//     });
-
-//     const data = await response.json();
-//     if (data.error) {
-//       console.log("Error:", data.message);
-//     } else {
-//       console.log("Booking successful:", data);
-//     }
-//   } catch (err) {
-//     console.log("fetch err: ", err);
-//   }
-// });

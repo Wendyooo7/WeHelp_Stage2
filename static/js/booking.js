@@ -4,7 +4,7 @@ let loginEmail;
 const token = localStorage.getItem("token");
 
 if (!token) {
-  window.location.replace("http://127.0.0.1:8000/");
+  window.location.replace("/");
 } else {
   document.addEventListener("DOMContentLoaded", () => {
     getNameAndEmail();
@@ -107,7 +107,7 @@ bookingBtnNav.addEventListener("click", () => {
 signStatusBtn.addEventListener("click", () => {
   localStorage.removeItem("token");
   signStatusBtn.textContent = "登入／註冊";
-  window.location.href = "http://127.0.0.1:8000/";
+  window.location.href = "/";
 });
 
 document
