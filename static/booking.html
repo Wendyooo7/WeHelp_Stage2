@@ -1,11 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking</title>
+    <link rel="stylesheet" href="static/styles/global.css" />
+    <link rel="stylesheet" href="/static/styles/booking.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="left">
+          <a href="/"><h1>台北一日遊</h1></a>
+        </div>
+        <div class="right">
+          <div id="nav-booking-btn" class="item">預定行程</div>
+          <div id="sign-status-btn" class="item">登出系統</div>
+        </div>
+      </nav>
+    </header>
+
+    <main id="booking-main">
+      <div id="main__greeting"></div>
+
+      <div id="main__booking__info__area">
+        <img id="main__booking__info__img" />
+
+        <div id="main__booking__info">
+          <img
+            id="main__booking__info__delete"
+            src="/static/styles/images/booking_delete.png"
+          />
+
+          <div id="main__booking__info__attraction-name"></div>
+          <div
+            id="main__booking__info__date"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__time"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__fee"
+            class="main__booking__info__item"
+          ></div>
+          <div
+            id="main__booking__info__address"
+            class="main__booking__info__item"
+          ></div>
+        </div>
+      </div>
+      <hr />
+
+      <div class="main__block" id="order-info">
+        <div class="main__block__title">您的聯絡資訊</div>
+        <label for="name" class="main__block__labels">聯絡姓名：</label>
+        <input
+          id="order-info__name"
+          type="text"
+          name="name"
+          class="main__block__inputs"
+        />
+        <br />
+        <label for="email" class="main__block__labels">聯絡信箱：</label>
+        <input
+          id="order-info__email"
+          type="text"
+          name="email"
+          class="main__block__inputs"
+        />
+        <br />
+        <label for="phone-number" class="main__block__label">手機號碼：</label>
+        <input type="text" name="phone-number" class="main__block__inputs" />
+        <div class="bold">
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="main__block" id="credit-card-info">
+        <div class="main__block__title">信用卡付款資訊</div>
+        <label for="card-number" class="main__block__labels">卡片號碼：</label>
+        <input
+          type="text"
+          placeholder="**** **** ****"
+          name="card-number"
+          class="main__block__inputs"
+        />
+        <br />
+        <label for="expire-date" class="main__block__labels">過期時間：</label>
+        <input
+          type="month"
+          placeholder="YYYY / MM"
+          name="expire-date"
+          class="main__block__inputs"
+        />
+        <br />
+        <label
+          for="
+        verification-number"
+          class="main__block__label"
+          >驗證碼：</label
+        >
+        <input
+          type="text"
+          placeholder="CVV"
+          name="
+        Verification number"
+          class="main__block__inputs"
+        />
+      </div>
+
+      <hr />
+
+      <div id="price-submit">
+        <div id="price-submit__price" class="main__block__content"></div>
+        <div class="booking-btn main__block__content">確認訂購並付款</div>
+      </div>
+    </main>
+
+    <!-- 彈出登入視窗 -->
+    <div id="sign-in-modal" class="pop-up-dialog">
+      <div class="sign-container">
+        <div class="sign__header"></div>
+        <div class="sign__main">
+          <img
+            id="sign-in__close-icon"
+            class="sign__close-icon"
+            src="/static/styles/images/icon_close.png"
+            alt="關閉視窗"
+          />
+          <label for="sign-in" class="sign__label sign__item__margin"
+            >登入會員帳號</label
+          >
+          <br />
+          <input
+            name="email"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-in-email"
+            placeholder="輸入電子信箱"
+          />
+          <br />
+          <input
+            name="password"
+            type="password"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-in-password"
+            placeholder="輸入密碼"
+          />
+          <br />
+          <button
+            class="sign__btn sign__item__margin sign__item__radius"
+            id="sign-in-btn"
+          >
+            登入帳戶
+          </button>
+          <div id="sign-in-msg"></div>
+          <div>還沒有帳戶？<span id="toSign-up-Modal">點此註冊</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sign-up-modal" class="pop-up-dialog">
+      <div class="sign-container">
+        <div class="sign__header"></div>
+        <div class="sign__main">
+          <img
+            id="sign-up__close-icon"
+            class="sign__close-icon"
+            src="/static/styles/images/icon_close.png"
+            alt="關閉視窗"
+          />
+          <label for="sign-up" class="sign__label sign__item__margin"
+            >註冊會員帳號</label
+          >
+          <br />
+          <input
+            name="name"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-name"
+            placeholder="輸入姓名"
+          />
+          <br />
+          <input
+            name="email"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-email"
+            placeholder="輸入電子信箱"
+          />
+          <br />
+          <input
+            name="password"
+            type="password"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-password"
+            placeholder="輸入密碼"
+          />
+          <br />
+          <button
+            class="sign__btn sign__item__margin sign__item__radius"
+            id="sign-up-btn"
+          >
+            註冊新帳戶
+          </button>
+          <div id="sign-up-msg"></div>
+          <div>已經有帳戶了？<span id="toSign-in-modal">點此登入</span></div>
+        </div>
+      </div>
+    </div>
+    <footer>COPYRIGHT © 2021 台北一日遊</footer>
+    <script src="/static/js/booking.js"></script>
+  </body>
 </html>

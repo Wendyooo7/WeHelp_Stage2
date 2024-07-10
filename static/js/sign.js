@@ -1,3 +1,4 @@
+const bookingBtnNav = document.querySelector("#nav-booking-btn");
 const signStatusBtn = document.querySelector("#sign-status-btn");
 const signInModal = document.querySelector("#sign-in-modal");
 
@@ -13,8 +14,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // 若已登入，點擊按鈕執行登出
       updateUIForSignedOutUser();
       localStorage.removeItem("token");
+      window.location.reload();
     } else {
       // 若未登入，顯示登入彈出視窗
+      signInModal.style.display = "block";
+    }
+  });
+
+  bookingBtnNav.addEventListener("click", () => {
+    if (localStorage.getItem("token")) {
+      window.location.href = "/booking";
+    } else {
       signInModal.style.display = "block";
     }
   });
@@ -122,6 +132,7 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
       signInMsg.style.color = "green";
       signInMsg.className = "sign__item__margin";
       localStorage.setItem("token", data.token);
+      window.location.reload();
       checkSignStatus();
     }
   } catch (err) {
@@ -129,34 +140,38 @@ document.querySelector("#sign-in-btn").addEventListener("click", async () => {
   }
 });
 
+// 檢查登入狀態
 async function checkSignStatus() {
   const token = localStorage.getItem("token");
-  if (token) {
-    try {
-      const response = await fetch("/api/user/auth", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // 在 Authorization header 中攜帶 Bearer Token
-        },
-      });
+  // if (token) {
+  try {
+    const response = await fetch("/api/user/auth", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 在 Authorization header 中攜帶 Bearer Token
+      },
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.data) {
-        // 已登入，更新 UI
-        updateUIForSignedInUser();
-      } else {
-        // 未登入，更新 UI
-        updateUIForSignedOutUser();
-      }
-    } catch (err) {
-      console.log("fetch err: ", err);
+    if (data.data) {
+      // 已登入，更新 UI
+      updateUIForSignedInUser();
+      // loginName = data.data.name;
+      // loginEmail = data.data.email;
+    } else {
+      // 未登入，更新 UI
+      updateUIForSignedOutUser();
     }
+  } catch (err) {
+    console.log("fetch err: ", err);
   }
   // 驗證完畢後顯示按鈕
   signStatusBtn.style.visibility = "visible";
 }
+
+// }
 
 function updateUIForSignedInUser() {
   signStatusBtn.textContent = "登出系統";

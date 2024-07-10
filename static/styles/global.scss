@@ -145,7 +145,8 @@ div.pop-up-dialog {
 }
 
 button,
-span:hover {
+span#toSign-up-Modal,
+span#toSign-in-modal:hover {
   cursor: pointer;
 }
 

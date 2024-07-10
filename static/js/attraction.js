@@ -1,5 +1,7 @@
+let attractionId;
+let time = "morning";
+
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOMContentLoaded");
   fetchAttractionID();
 });
 
@@ -8,7 +10,7 @@ async function fetchAttractionID() {
   //   console.log(pathName); /attraction/7
   const pathParts = pathName.split("/");
   //   console.log(pathParts); Array(3) [ "", "attraction", "7" ]
-  const attractionId = pathParts[pathParts.length - 1]; // 取得url最後一部分作為 attractionId
+  attractionId = pathParts[pathParts.length - 1]; // 取得url最後一部分作為 attractionId
   const url = `/api/attraction/${attractionId}`;
 
   try {
@@ -111,10 +113,51 @@ const afternoonPrice = "新台幣 2500 元";
 
 allRadios.forEach((radio) => {
   radio.addEventListener("change", (event) => {
-    if (event.target.value === "morning") {
+    time = event.target.value;
+    if (time === "morning") {
       spanPrice.textContent = morningPrice;
     } else {
       spanPrice.textContent = afternoonPrice;
     }
   });
+});
+
+const bookingBtnMain = document.querySelector("#booking-btn");
+
+bookingBtnMain.addEventListener("click", async () => {
+  console.log("click");
+  if (localStorage.getItem("token")) {
+    const date = document.querySelector("input[type='date']").value;
+    const priceText = spanPrice.textContent;
+    const priceTextSplit = priceText.split(" ");
+    const pricePart = priceTextSplit[1];
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          attractionId: Number(attractionId),
+          date: date,
+          time: time,
+          price: Number(pricePart),
+        }),
+      });
+
+      const data = await response.json();
+      if (data.ok) {
+        window.location.href = "/booking";
+      } else {
+        console.log(data.message);
+      }
+    } catch (err) {
+      console.log("fetch err: ", err);
+    }
+  } else {
+    signInModal.style.display = "block";
+  }
 });

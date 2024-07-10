@@ -3,9 +3,9 @@
 // }
 
 // 將所有字的顏色定義如下：
-* {
-  color: rgba(102, 102, 102, 1);
-}
+// * {
+//   color: rgba(102, 102, 102, 1);
+// }
 
 main {
   display: flex;
@@ -131,6 +131,10 @@ main {
           line-height: 32px;
           // max-height: 42.81px;
           // 即便連btn一起處理，btn的文字還是會溢出，因為空間不夠
+
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
     }

@@ -17,7 +17,7 @@ const lastAttractionObserver = new IntersectionObserver(
     // 若實體不在視窗內，就不偵測
     lastAttractionObserver.unobserve(lastAttractionEntry.target);
     // 偵測完就移除偵測，避免重複觸發
-    console.log(lastAttractionEntry.target.textContent);
+    // console.log(lastAttractionEntry.target.textContent);
     loadMoreAttraction();
   },
   {
@@ -435,12 +435,10 @@ const ulElement = document.querySelector("#mrt-bar__ul-container");
 
 // GPT & Phild
 function scrollToLeft() {
-  console.log("往左");
   ulElement.scrollBy({ left: -400, behavior: "smooth" });
 }
 
 function scrollRight() {
-  console.log("往右");
   ulElement.scrollBy({ left: 400, behavior: "smooth" });
 }
 
