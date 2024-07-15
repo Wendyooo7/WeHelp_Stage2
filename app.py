@@ -88,7 +88,7 @@ def get_user_status(request: Request):
 
 
 # Task 6
-@app.post("/api/orders", response_model=dict)
+@app.post("/api/orders")
 async def order_my_tour(request: Request,
                         user_id: int = Depends(get_user_status)):
 
@@ -102,11 +102,20 @@ async def order_my_tour(request: Request,
     data = await request.json()
     print(data)
     prime = data.get("prime")
-    contact = data.get("contact")
+    order = data.get("order")
+    contact = order.get("contact") if order else None
+
+    if not contact:
+        return JSONResponse(content={
+            "error": True,
+            "message": "訂單建立失敗，聯絡資料缺失"
+        },
+                            status_code=400)
+
     name = contact.get("name")
     email = contact.get("email")
     phone = contact.get("phone")
-
+    # print(prime, name, email, phone)
     # name = data.get(["contact"]["name"])
     # email = data.get(["contact"]["email"])
     # phone = data.get(["contact"]["phone"])
@@ -114,52 +123,64 @@ async def order_my_tour(request: Request,
     if not prime or not name or not email or not phone:
         return JSONResponse(content={
             "error": True,
-            "message": "訂單建立失敗，輸入資料不完全或不正確"
+            "message": "訂單建立失敗，聯絡資料不完整"
         },
                             status_code=400)
 
-    # sql = "SELECT * FROM booking WHERE user_id = %s"
 
-    # try:
-    #     mydb = mysql.connector.connect(host=DATABASE_HOST,
-    #                                    user=DATABASE_USER,
-    #                                    password=DATABASE_PASSWORD,
-    #                                    database=DATABASE_NAME,
-    #                                    charset='utf8mb4')
+# 付款成功的結果
+# {
+#     "data": {
+#         "number": "20210425121135",
+#         "payment": {
+#             "status": 0,
+#             "message": "付款成功"
+#         }
+#     }
+# }
 
-    #     cursor = mydb.cursor()
+# sql = "SELECT * FROM booking WHERE user_id = %s"
 
-    #     with cursor as mycursor:
-    #         mycursor.execute(sql, (user_id, ))
-    #         myresult = mycursor.fetchone()
-    #         print(myresult)
+# try:
+#     mydb = mysql.connector.connect(host=DATABASE_HOST,
+#                                    user=DATABASE_USER,
+#                                    password=DATABASE_PASSWORD,
+#                                    database=DATABASE_NAME,
+#                                    charset='utf8mb4')
 
-    #         if not myresult:
-    #             sql = """
-    # INSERT INTO booking (user_id, attraction_id, date, time, price)
-    # VALUES (%s, %s, %s, %s, %s)
-    # """
-    #             mycursor.execute(sql,
-    #                              (user_id, attraction_id, date, time, price))
-    #         else:
-    #             sql = """
-    # UPDATE booking
-    # SET attraction_id=%s, date=%s, time=%s, price=%s
-    # WHERE user_id=%s
-    # """
-    #             mycursor.execute(sql,
-    #                              (attraction_id, date, time, price, user_id))
-    #         mydb.commit()
-    #         print(mycursor.rowcount, "record inserted.")
+#     cursor = mydb.cursor()
 
-    #         return JSONResponse(content={"ok": True}, status_code=200)
+#     with cursor as mycursor:
+#         mycursor.execute(sql, (user_id, ))
+#         myresult = mycursor.fetchone()
+#         print(myresult)
 
-    # except Exception as err:
-    #     return JSONResponse(content={
-    #         "error": True,
-    #         "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
-    #     },
-    #                         status_code=500)
+#         if not myresult:
+#             sql = """
+# INSERT INTO booking (user_id, attraction_id, date, time, price)
+# VALUES (%s, %s, %s, %s, %s)
+# """
+#             mycursor.execute(sql,
+#                              (user_id, attraction_id, date, time, price))
+#         else:
+#             sql = """
+# UPDATE booking
+# SET attraction_id=%s, date=%s, time=%s, price=%s
+# WHERE user_id=%s
+# """
+#             mycursor.execute(sql,
+#                              (attraction_id, date, time, price, user_id))
+#         mydb.commit()
+#         print(mycursor.rowcount, "record inserted.")
+
+#         return JSONResponse(content={"ok": True}, status_code=200)
+
+# except Exception as err:
+#     return JSONResponse(content={
+#         "error": True,
+#         "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+#     },
+#                         status_code=500)
 
 
 @app.delete("/api/booking", response_model=dict)

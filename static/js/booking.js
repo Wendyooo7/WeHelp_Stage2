@@ -1,4 +1,5 @@
 // SetupSDK
+let prime;
 const APP_ID = 152092;
 const appKey =
   "app_HUVYg88ZYWQ2wsxAuJWLBfGhhVPATfVq0xrzE0e2hliTBq6BZHR2HTrbLfLt";
@@ -65,47 +66,50 @@ TPDirect.card.setup({
 });
 
 // TPDirect.card.getTappayFieldsStatus()以下等同
-const submitButton = document.querySelector("#main-booking-btn");
-TPDirect.card.onUpdate(function (update) {
-  // update.canGetPrime === true
-  // --> you can call TPDirect.card.getPrime()
-  if (update.canGetPrime) {
-    // Enable submit Button to get prime.
-    submitButton.removeAttribute("disabled");
-  } else {
-    // Disable submit Button to get prime.
-    submitButton.setAttribute("disabled", true);
-  }
 
-  // // number 欄位是錯誤的
-  // if (update.status.number === 2) {
-  //   setNumberFormGroupToError();
-  // } else if (update.status.number === 0) {
-  //   setNumberFormGroupToSuccess();
-  // } else {
-  //   setNumberFormGroupToNormal();
-  // }
+const bookingBtnMain = document.querySelector("#main-booking-btn");
 
-  // if (update.status.expiry === 2) {
-  //   setNumberFormGroupToError();
-  // } else if (update.status.expiry === 0) {
-  //   setNumberFormGroupToSuccess();
-  // } else {
-  //   setNumberFormGroupToNormal();
-  // }
+// 若能取得prime則可按按鈕，不能則不可按
+// TPDirect.card.onUpdate(function (update) {
+//   // update.canGetPrime === true
+//   // --> you can call TPDirect.card.getPrime()
+//   if (update.canGetPrime) {
+//     // Enable submit Button to get prime.
+//     bookingBtnMain.removeAttribute("disabled");
+//   } else {
+//     // Disable submit Button to get prime.
+//     bookingBtnMain.setAttribute("disabled", true);
+//   }
 
-  // if (update.status.ccv === 2) {
-  //   setNumberFormGroupToError();
-  // } else if (update.status.ccv === 0) {
-  //   setNumberFormGroupToSuccess();
-  // } else {
-  //   setNumberFormGroupToNormal();
-  // }
-});
+//   // // number 欄位是錯誤的
+//   // if (update.status.number === 2) {
+//   //   setNumberFormGroupToError();
+//   // } else if (update.status.number === 0) {
+//   //   setNumberFormGroupToSuccess();
+//   // } else {
+//   //   setNumberFormGroupToNormal();
+//   // }
+
+//   // if (update.status.expiry === 2) {
+//   //   setNumberFormGroupToError();
+//   // } else if (update.status.expiry === 0) {
+//   //   setNumberFormGroupToSuccess();
+//   // } else {
+//   //   setNumberFormGroupToNormal();
+//   // }
+
+//   // if (update.status.ccv === 2) {
+//   //   setNumberFormGroupToError();
+//   // } else if (update.status.ccv === 0) {
+//   //   setNumberFormGroupToSuccess();
+//   // } else {
+//   //   setNumberFormGroupToNormal();
+//   // }
+// });
 
 // TPDirect.card.getPrime(callback);
 
-submitButton.addEventListener("click", (event) => {
+bookingBtnMain.addEventListener("click", (event) => {
   event.preventDefault();
 
   // 取得 TapPay Fields 的 status
@@ -113,7 +117,8 @@ submitButton.addEventListener("click", (event) => {
   console.log(tappayStatus);
   // 確認是否可以 getPrime
   if (tappayStatus.canGetPrime === false) {
-    alert("can not get prime");
+    console.log("can not get prime");
+    alert("請檢查信用卡資訊欄位是否都完整輸入，以及是否輸入正確");
     return;
   }
 
@@ -123,16 +128,63 @@ submitButton.addEventListener("click", (event) => {
       alert("get prime error " + result.msg);
       return;
     }
-    // alert("get prime 成功，prime: " + result.card.prime);
+    console.log("get prime 成功，prime: " + result.card.prime);
     prime = result.card.prime;
-    console.log(prime);
-    localStorage.setItem("prime", prime);
+    // localStorage.setItem("prime", prime);
 
+    orderMyTour();
     // send prime to your server, to pay with Pay by Prime API .
     // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
   });
 });
 
+async function orderMyTour() {
+  try {
+    const token = localStorage.getItem("token");
+    // const prime = localStorage.getItem("prime");
+    console.log(prime);
+    const phoneNumber = document.querySelector("#phone-number").value;
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        prime: prime,
+        order: {
+          price: dataFee,
+          trip: {
+            attraction: {
+              id: dataAttractionId,
+              name: dataName,
+              address: dataAddress,
+              image: dataImg,
+            },
+            date: dataDate,
+            time: dataTime,
+          },
+          contact: {
+            name: loginName,
+            email: loginEmail,
+            phone: phoneNumber,
+          },
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+    // if (data.ok) {
+    //   window.location.href = "/booking";
+    // } else {
+    //   console.log(data.message);
+    // }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
+}
 // export { prime };
 // console.log(prime); undefined
 // 4242424242424242
@@ -289,54 +341,7 @@ document
   });
 
 // 按下按鈕後的邏輯
-const bookingBtnMain = document.querySelector("#main-booking-btn");
 
-bookingBtnMain.addEventListener("click", async () => {
-  console.log("建立訂單");
+// bookingBtnMain.addEventListener("click", async () => {
 
-  try {
-    const token = localStorage.getItem("token");
-    const prime = localStorage.getItem("prime");
-    console.log(prime);
-    const phoneNumber = document.querySelector("#phone-number").value;
-    const response = await fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        prime: prime,
-        order: {
-          price: dataFee,
-          trip: {
-            attraction: {
-              id: dataAttractionId,
-              name: dataName,
-              address: dataAddress,
-              image: dataImg,
-            },
-            date: dataDate,
-            time: dataTime,
-          },
-          contact: {
-            name: loginName,
-            email: loginEmail,
-            phone: phoneNumber,
-          },
-        },
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log(data);
-    // if (data.ok) {
-    //   window.location.href = "/booking";
-    // } else {
-    //   console.log(data.message);
-    // }
-  } catch (err) {
-    console.log("fetch err: ", err);
-  }
-});
+// });
