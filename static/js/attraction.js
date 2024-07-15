@@ -1,5 +1,7 @@
 let attractionId;
 let time = "morning";
+let date;
+let pricePart;
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchAttractionID();
@@ -127,10 +129,10 @@ const bookingBtnMain = document.querySelector("#booking-btn");
 bookingBtnMain.addEventListener("click", async () => {
   console.log("click");
   if (localStorage.getItem("token")) {
-    const date = document.querySelector("input[type='date']").value;
+    date = document.querySelector("input[type='date']").value;
     const priceText = spanPrice.textContent;
     const priceTextSplit = priceText.split(" ");
-    const pricePart = priceTextSplit[1];
+    pricePart = priceTextSplit[1];
 
     try {
       const token = localStorage.getItem("token");
@@ -161,3 +163,5 @@ bookingBtnMain.addEventListener("click", async () => {
     signInModal.style.display = "block";
   }
 });
+
+// export { attractionId, date, time, pricePart };

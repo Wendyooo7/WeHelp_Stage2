@@ -1,3 +1,4 @@
+let prime;
 // SetupSDK
 const APP_ID = 152092;
 const appKey =
@@ -24,10 +25,6 @@ let fields = {
 TPDirect.card.setup({
   fields: fields,
   styles: {
-    // Style all elements
-    input: {
-      color: "rgb(232, 232, 232)",
-    },
     // Styling ccv field
     "input.ccv": {
       "font-size": "16px",
@@ -81,30 +78,30 @@ TPDirect.card.onUpdate(function (update) {
     submitButton.setAttribute("disabled", true);
   }
 
-  // number 欄位是錯誤的
-  if (update.status.number === 2) {
-    setNumberFormGroupToError();
-  } else if (update.status.number === 0) {
-    setNumberFormGroupToSuccess();
-  } else {
-    setNumberFormGroupToNormal();
-  }
+  // // number 欄位是錯誤的
+  // if (update.status.number === 2) {
+  //   setNumberFormGroupToError();
+  // } else if (update.status.number === 0) {
+  //   setNumberFormGroupToSuccess();
+  // } else {
+  //   setNumberFormGroupToNormal();
+  // }
 
-  if (update.status.expiry === 2) {
-    setNumberFormGroupToError();
-  } else if (update.status.expiry === 0) {
-    setNumberFormGroupToSuccess();
-  } else {
-    setNumberFormGroupToNormal();
-  }
+  // if (update.status.expiry === 2) {
+  //   setNumberFormGroupToError();
+  // } else if (update.status.expiry === 0) {
+  //   setNumberFormGroupToSuccess();
+  // } else {
+  //   setNumberFormGroupToNormal();
+  // }
 
-  if (update.status.ccv === 2) {
-    setNumberFormGroupToError();
-  } else if (update.status.ccv === 0) {
-    setNumberFormGroupToSuccess();
-  } else {
-    setNumberFormGroupToNormal();
-  }
+  // if (update.status.ccv === 2) {
+  //   setNumberFormGroupToError();
+  // } else if (update.status.ccv === 0) {
+  //   setNumberFormGroupToSuccess();
+  // } else {
+  //   setNumberFormGroupToNormal();
+  // }
 });
 
 // TPDirect.card.getPrime(callback);
@@ -128,8 +125,13 @@ submitButton.addEventListener("click", (event) => {
       return;
     }
     alert("get prime 成功，prime: " + result.card.prime);
-
+    prime = result.card.prime;
+    console.log(prime);
+    localStorage.setItem("prime", prime);
     // send prime to your server, to pay with Pay by Prime API .
     // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
   });
 });
+
+// export { prime };
+// console.log(prime); undefined
