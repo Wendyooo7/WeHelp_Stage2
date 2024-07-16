@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 import jwt
 from jwt.exceptions import InvalidTokenError
 from datetime import datetime, timedelta, timezone
+import random
 
 load_dotenv()
 DATABASE_HOST = os.getenv("DB_HOST")
@@ -87,11 +88,30 @@ def get_user_status(request: Request):
         raise AuthException(f"內部伺服器或與資料庫連接錯誤: {str(err)}", 500)
 
 
+def generate_order_number():
+    # 獲取當前日期並格式化為 YYYYMMDD
+    current_date = datetime.now().strftime('%Y%m%d')
+    # print("現在時間", datetime.now())
+    # print("現在時間轉字串", current_date)
+
+    # 生成六位隨機數字
+    random_digits = str(random.randint(100000, 999999))
+    # print("隨機生成數字", random_digits)
+    # 組合成訂單編號，共14位數字
+    order_number = f"{current_date}{random_digits}"
+    print(order_number)
+    return order_number
+
+
+# # 測試生成訂單編號
+# print("印出14位數字", generate_order_number())
+
+
 # Task 6
 @app.post("/api/orders")
 async def order_my_tour(request: Request,
                         user_id: int = Depends(get_user_status)):
-
+    print(user_id)
     if not user_id:
         return JSONResponse(content={
             "error": True,
@@ -120,12 +140,73 @@ async def order_my_tour(request: Request,
     # email = data.get(["contact"]["email"])
     # phone = data.get(["contact"]["phone"])
 
-    if not prime or not name or not email or not phone:
+    if not name or not email or not phone:
         return JSONResponse(content={
             "error": True,
             "message": "訂單建立失敗，聯絡資料不完整"
         },
                             status_code=400)
+
+    trip = order.get("trip")
+    attraction = trip.get("attraction")
+    first_image = attraction.get("image")
+    attraction_id = attraction.get("id")
+
+    try:
+        mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                       user=DATABASE_USER,
+                                       password=DATABASE_PASSWORD,
+                                       database=DATABASE_NAME,
+                                       charset='utf8mb4')
+
+        cursor = mydb.cursor()
+
+        with cursor as mycursor:
+            insert_contact_query = """
+                INSERT INTO contacts (member_id, name, email, phone)
+                VALUES (%s, %s, %s, %s)
+                """
+            contact_values = (user_id, name, email, phone)
+
+            mycursor.execute(insert_contact_query, contact_values)
+            contact_id = mycursor.lastrowid
+
+            insert_order_query = """
+                INSERT INTO orders (number, price, contact_id, status)
+                VALUES (%s, %s, %s, %s)
+                """
+            order_values = (generate_order_number(), order["price"],
+                            contact_id, 1)
+            mycursor.execute(insert_order_query, order_values)
+            order_id = mycursor.lastrowid
+
+            insert_booking_query = """
+                INSERT INTO booking (order_id)
+                VALUES (%s)
+                """
+            mycursor.execute(insert_booking_query, (order_id, ))
+
+            update_attraction_query = """
+        UPDATE attraction
+        SET first_image = %s
+        WHERE id = %s
+    """
+            mycursor.execute(update_attraction_query,
+                             (first_image, attraction_id))
+            mydb.commit()
+
+        return JSONResponse(content={
+            "error": False,
+            "message": "訂單建立成功"
+        },
+                            status_code=200)
+
+    except Exception as err:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
 
 
 # 付款成功的結果
@@ -342,7 +423,7 @@ async def book_my_tour(request: Request,
 @app.delete("/api/booking", response_model=dict)
 async def delete_my_tour(request: Request,
                          user_id: int = Depends(get_user_status)):
-    sql = "DELETE FROM booking WHERE user_id = %s"
+    sql = "DELETE FROM booking WHERE user_id = %s AND order_id IS NULL"
 
     try:
         mydb = mysql.connector.connect(host=DATABASE_HOST,
