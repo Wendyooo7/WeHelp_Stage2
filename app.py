@@ -1,7 +1,7 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from passlib.context import CryptContext
@@ -9,6 +9,9 @@ import jwt
 from jwt.exceptions import InvalidTokenError
 from datetime import datetime, timedelta, timezone
 import random
+import urllib.request
+# 確認是否在ubuntu pip
+import json
 
 load_dotenv()
 DATABASE_HOST = os.getenv("DB_HOST")
@@ -111,14 +114,15 @@ def generate_order_number():
 @app.post("/api/orders")
 async def order_my_tour(request: Request,
                         user_id: int = Depends(get_user_status)):
-    print(user_id)
+    print("user_id:", user_id)
+
     if not user_id:
         return JSONResponse(content={
             "error": True,
             "message": "未登入系統，拒絕存取"
         },
                             status_code=403)
-
+    print("user_id:", user_id)
     data = await request.json()
     print(data)
     prime = data.get("prime")
@@ -167,39 +171,37 @@ async def order_my_tour(request: Request,
                 VALUES (%s, %s, %s, %s)
                 """
             contact_values = (user_id, name, email, phone)
-
             mycursor.execute(insert_contact_query, contact_values)
             contact_id = mycursor.lastrowid
+            print("173:", contact_id)
 
             insert_order_query = """
-                INSERT INTO orders (number, price, contact_id, status)
-                VALUES (%s, %s, %s, %s)
-                """
+                        INSERT INTO orders (number, price, contact_id, status)
+                        VALUES (%s, %s, %s, %s)
+                        """
             order_values = (generate_order_number(), order["price"],
                             contact_id, 1)
-            mycursor.execute(insert_order_query, order_values)
-            order_id = mycursor.lastrowid
+            order_number = generate_order_number()
 
-            insert_booking_query = """
-                INSERT INTO booking (order_id)
-                VALUES (%s)
-                """
-            mycursor.execute(insert_booking_query, (order_id, ))
+            mycursor.execute(insert_order_query, order_values)
+
+            order_id = mycursor.lastrowid
+            print(order_id)
+
+            # insert_booking_query = """
+            #             UPDATE booking (order_id)
+            #             VALUES (%s)
+            #             """
+            # mycursor.execute(insert_booking_query, (order_id, ))
 
             update_attraction_query = """
-        UPDATE attraction
-        SET first_image = %s
-        WHERE id = %s
-    """
+                UPDATE attraction
+                SET first_image = %s
+                WHERE id = %s
+            """
             mycursor.execute(update_attraction_query,
                              (first_image, attraction_id))
             mydb.commit()
-
-        return JSONResponse(content={
-            "error": False,
-            "message": "訂單建立成功"
-        },
-                            status_code=200)
 
     except Exception as err:
         return JSONResponse(content={
@@ -208,60 +210,90 @@ async def order_my_tour(request: Request,
         },
                             status_code=500)
 
+    url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"  # 測試環境URL
 
-# 付款成功的結果
-# {
-#     "data": {
-#         "number": "20210425121135",
-#         "payment": {
-#             "status": 0,
-#             "message": "付款成功"
-#         }
-#     }
-# }
+    headers = {
+        "Content-Type":
+        "application/json",
+        "x-api-key":
+        "partner_a8LcEfdXGwJ0KZ6mQxvkhGz5DSFFswAIK5viNCNbUg7C7TyXSo141ww2"
+    }
 
-# sql = "SELECT * FROM booking WHERE user_id = %s"
+    payment_data = {
+        "prime": prime,
+        "partner_key":
+        "partner_a8LcEfdXGwJ0KZ6mQxvkhGz5DSFFswAIK5viNCNbUg7C7TyXSo141ww2",
+        "merchant_id": "hnu0412_TAISHIN",
+        "amount": order["price"],
+        "details": "Tour Booking Payment",
+        "cardholder": {
+            "phone_number": phone,
+            "name": name,
+            "email": email
+        }
+    }
+    request_data = json.dumps(payment_data).encode('utf-8')
+    req = urllib.request.Request(url, data=request_data, headers=headers)
 
-# try:
-#     mydb = mysql.connector.connect(host=DATABASE_HOST,
-#                                    user=DATABASE_USER,
-#                                    password=DATABASE_PASSWORD,
-#                                    database=DATABASE_NAME,
-#                                    charset='utf8mb4')
+    try:
+        with urllib.request.urlopen(req) as response:
+            if response.status != 200:
+                raise HTTPException(status_code=response.status,
+                                    detail="Payment failed")
+            response_data = response.read().decode('utf-8')
+            payment_response = json.loads(response_data)
 
-#     cursor = mydb.cursor()
+            # 根據支付回應更新訂單狀態
+            if payment_response.get("status") != 0:
+                raise HTTPException(status_code=400, detail="Payment failed")
 
-#     with cursor as mycursor:
-#         mycursor.execute(sql, (user_id, ))
-#         myresult = mycursor.fetchone()
-#         print(myresult)
+            # mydb = mysql.connector.connect(host=DATABASE_HOST,
+            #                                user=DATABASE_USER,
+            #                                password=DATABASE_PASSWORD,
+            #                                database=DATABASE_NAME,
+            #                                charset='utf8mb4')
 
-#         if not myresult:
-#             sql = """
-# INSERT INTO booking (user_id, attraction_id, date, time, price)
-# VALUES (%s, %s, %s, %s, %s)
-# """
-#             mycursor.execute(sql,
-#                              (user_id, attraction_id, date, time, price))
-#         else:
-#             sql = """
-# UPDATE booking
-# SET attraction_id=%s, date=%s, time=%s, price=%s
-# WHERE user_id=%s
-# """
-#             mycursor.execute(sql,
-#                              (attraction_id, date, time, price, user_id))
-#         mydb.commit()
-#         print(mycursor.rowcount, "record inserted.")
+            # cursor = mydb.cursor()
+            # with cursor as mycursor:
 
-#         return JSONResponse(content={"ok": True}, status_code=200)
+            #     update_order_status_query = """
+            #             UPDATE orders
+            #             SET status = 0
+            #             WHERE id = %s
+            #         """
+            #     mycursor.execute(update_order_status_query, (order_id, ))
+            #     mydb.commit()
 
-# except Exception as err:
-#     return JSONResponse(content={
-#         "error": True,
-#         "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
-#     },
-#                         status_code=500)
+    except urllib.error.HTTPError as e:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"Payment failed: {e.reason}"
+        },
+                            status_code=e.code)
+
+    except Exception as e:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"Payment processing error: {str(e)}"
+        },
+                            status_code=500)
+    except Exception as err:
+        return JSONResponse(content={
+            "error": True,
+            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
+        },
+                            status_code=500)
+
+    return JSONResponse(content={
+        "data": {
+            "number": order_number,
+            "payment": {
+                "status": 0,
+                "message": "付款成功"
+            }
+        }
+    },
+                        status_code=200)
 
 
 @app.delete("/api/booking", response_model=dict)
