@@ -94,27 +94,20 @@ def get_user_status(request: Request):
 def generate_order_number():
     # 獲取當前日期並格式化為 YYYYMMDD
     current_date = datetime.now().strftime('%Y%m%d')
-    # print("現在時間", datetime.now())
-    # print("現在時間轉字串", current_date)
 
     # 生成六位隨機數字
     random_digits = str(random.randint(100000, 999999))
-    # print("隨機生成數字", random_digits)
+
     # 組合成訂單編號，共14位數字
     order_number = f"{current_date}{random_digits}"
-    print(order_number)
+
     return order_number
-
-
-# # 測試生成訂單編號
-# print("印出14位數字", generate_order_number())
 
 
 # Task 6
 @app.post("/api/orders")
 async def order_my_tour(request: Request,
                         user_id: int = Depends(get_user_status)):
-    print("user_id:", user_id)
 
     if not user_id:
         return JSONResponse(content={
@@ -122,9 +115,8 @@ async def order_my_tour(request: Request,
             "message": "未登入系統，拒絕存取"
         },
                             status_code=403)
-    print("user_id:", user_id)
+
     data = await request.json()
-    print(data)
     prime = data.get("prime")
     order = data.get("order")
     contact = order.get("contact") if order else None
@@ -139,7 +131,8 @@ async def order_my_tour(request: Request,
     name = contact.get("name")
     email = contact.get("email")
     phone = contact.get("phone")
-    # print(prime, name, email, phone)
+
+    # 以下三行錯誤寫法
     # name = data.get(["contact"]["name"])
     # email = data.get(["contact"]["email"])
     # phone = data.get(["contact"]["phone"])
@@ -151,10 +144,17 @@ async def order_my_tour(request: Request,
         },
                             status_code=400)
 
+    price = order.get("price")
     trip = order.get("trip")
+
+    date = trip.get("date")
+    time = trip.get("time")
     attraction = trip.get("attraction")
+
     first_image = attraction.get("image")
     attraction_id = attraction.get("id")
+
+    order_number = generate_order_number()
 
     try:
         mydb = mysql.connector.connect(host=DATABASE_HOST,
@@ -166,41 +166,45 @@ async def order_my_tour(request: Request,
         cursor = mydb.cursor()
 
         with cursor as mycursor:
+
+            # 將訂單中的聯絡資料存進table contacts，供之後join完整的訂單資料
             insert_contact_query = """
                 INSERT INTO contacts (member_id, name, email, phone)
                 VALUES (%s, %s, %s, %s)
                 """
             contact_values = (user_id, name, email, phone)
+
             mycursor.execute(insert_contact_query, contact_values)
             contact_id = mycursor.lastrowid
-            print("173:", contact_id)
 
+            # 將訂單中的聯絡和景點之外的資料存進table order，供之後join完整的訂單資料
             insert_order_query = """
-                        INSERT INTO orders (number, price, contact_id, status)
-                        VALUES (%s, %s, %s, %s)
+                        INSERT INTO orders (order_number, user_id, contact_id, attraction_id, date, time, price)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
                         """
-            order_values = (generate_order_number(), order["price"],
-                            contact_id, 1)
-            order_number = generate_order_number()
+            order_values = (order_number, user_id, contact_id, attraction_id,
+                            date, time, price)
+            print("order_values", order_values)
 
             mycursor.execute(insert_order_query, order_values)
-
             order_id = mycursor.lastrowid
-            print(order_id)
 
-            # insert_booking_query = """
-            #             UPDATE booking (order_id)
-            #             VALUES (%s)
-            #             """
-            # mycursor.execute(insert_booking_query, (order_id, ))
+            # 刪除訂購者的table booking資料
+            delete_booking_query = """
+                        DELETE FROM booking WHERE user_id = %s
+                        """
+            mycursor.execute(delete_booking_query, (user_id, ))
 
+            # 新增第一張照片url進TABLE attraction供之後的order get api使用
             update_attraction_query = """
                 UPDATE attraction
                 SET first_image = %s
                 WHERE id = %s
             """
+
             mycursor.execute(update_attraction_query,
                              (first_image, attraction_id))
+
             mydb.commit()
 
     except Exception as err:
@@ -210,6 +214,7 @@ async def order_my_tour(request: Request,
         },
                             status_code=500)
 
+    # 連線TapPay伺服器
     url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"  # 測試環境URL
 
     headers = {
@@ -224,7 +229,7 @@ async def order_my_tour(request: Request,
         "partner_key":
         "partner_a8LcEfdXGwJ0KZ6mQxvkhGz5DSFFswAIK5viNCNbUg7C7TyXSo141ww2",
         "merchant_id": "hnu0412_TAISHIN",
-        "amount": order["price"],
+        "amount": price,
         "details": "Tour Booking Payment",
         "cardholder": {
             "phone_number": phone,
@@ -232,37 +237,60 @@ async def order_my_tour(request: Request,
             "email": email
         }
     }
+
     request_data = json.dumps(payment_data).encode('utf-8')
     req = urllib.request.Request(url, data=request_data, headers=headers)
 
     try:
         with urllib.request.urlopen(req) as response:
+
+            # 將order_number存進table payments
+            mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                           user=DATABASE_USER,
+                                           password=DATABASE_PASSWORD,
+                                           database=DATABASE_NAME,
+                                           charset='utf8mb4')
+
+            cursor = mydb.cursor()
+
+            with cursor as mycursor:
+                insert_payments_query = """
+            INSERT INTO payments (order_number)
+            VALUES (%s)
+            """
+
+                mycursor.execute(insert_payments_query, (order_number, ))
+                mydb.commit()
+
             if response.status != 200:
                 raise HTTPException(status_code=response.status,
                                     detail="Payment failed")
+
             response_data = response.read().decode('utf-8')
             payment_response = json.loads(response_data)
+            payment_status = payment_response.get("status")
+            print(payment_response)
+            payment_message = payment_response.get("msg")
 
-            # 根據支付回應更新訂單狀態
-            if payment_response.get("status") != 0:
-                raise HTTPException(status_code=400, detail="Payment failed")
+            # 若付款成功，將table orders該筆訂單的付款狀態改為PAID
+            if payment_status == 0:
+                mydb = mysql.connector.connect(host=DATABASE_HOST,
+                                               user=DATABASE_USER,
+                                               password=DATABASE_PASSWORD,
+                                               database=DATABASE_NAME,
+                                               charset='utf8mb4')
 
-            # mydb = mysql.connector.connect(host=DATABASE_HOST,
-            #                                user=DATABASE_USER,
-            #                                password=DATABASE_PASSWORD,
-            #                                database=DATABASE_NAME,
-            #                                charset='utf8mb4')
+                cursor = mydb.cursor()
 
-            # cursor = mydb.cursor()
-            # with cursor as mycursor:
+                with cursor as mycursor:
 
-            #     update_order_status_query = """
-            #             UPDATE orders
-            #             SET status = 0
-            #             WHERE id = %s
-            #         """
-            #     mycursor.execute(update_order_status_query, (order_id, ))
-            #     mydb.commit()
+                    update_order_status_query = """
+                        UPDATE orders
+                        SET paid_status = 'PAID'
+                        WHERE order_id = %s
+                    """
+                    mycursor.execute(update_order_status_query, (order_id, ))
+                    mydb.commit()
 
     except urllib.error.HTTPError as e:
         return JSONResponse(content={
@@ -277,19 +305,13 @@ async def order_my_tour(request: Request,
             "message": f"Payment processing error: {str(e)}"
         },
                             status_code=500)
-    except Exception as err:
-        return JSONResponse(content={
-            "error": True,
-            "message": f"內部伺服器或與資料庫連接錯誤: {str(err)}"
-        },
-                            status_code=500)
 
     return JSONResponse(content={
         "data": {
             "number": order_number,
             "payment": {
-                "status": 0,
-                "message": "付款成功"
+                "status": payment_status,
+                "message": payment_message
             }
         }
     },
