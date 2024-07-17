@@ -65,56 +65,16 @@ TPDirect.card.setup({
   },
 });
 
-// TPDirect.card.getTappayFieldsStatus()以下等同
-
 const bookingBtnMain = document.querySelector("#main-booking-btn");
 
-// 若能取得prime則可按按鈕，不能則不可按
-// TPDirect.card.onUpdate(function (update) {
-//   // update.canGetPrime === true
-//   // --> you can call TPDirect.card.getPrime()
-//   if (update.canGetPrime) {
-//     // Enable submit Button to get prime.
-//     bookingBtnMain.removeAttribute("disabled");
-//   } else {
-//     // Disable submit Button to get prime.
-//     bookingBtnMain.setAttribute("disabled", true);
-//   }
-
-//   // // number 欄位是錯誤的
-//   // if (update.status.number === 2) {
-//   //   setNumberFormGroupToError();
-//   // } else if (update.status.number === 0) {
-//   //   setNumberFormGroupToSuccess();
-//   // } else {
-//   //   setNumberFormGroupToNormal();
-//   // }
-
-//   // if (update.status.expiry === 2) {
-//   //   setNumberFormGroupToError();
-//   // } else if (update.status.expiry === 0) {
-//   //   setNumberFormGroupToSuccess();
-//   // } else {
-//   //   setNumberFormGroupToNormal();
-//   // }
-
-//   // if (update.status.ccv === 2) {
-//   //   setNumberFormGroupToError();
-//   // } else if (update.status.ccv === 0) {
-//   //   setNumberFormGroupToSuccess();
-//   // } else {
-//   //   setNumberFormGroupToNormal();
-//   // }
-// });
-
 // TPDirect.card.getPrime(callback);
-
+// TPDirect.card.getTappayFieldsStatus()等同以下
 bookingBtnMain.addEventListener("click", (event) => {
   event.preventDefault();
 
   // 取得 TapPay Fields 的 status
   const tappayStatus = TPDirect.card.getTappayFieldsStatus();
-  console.log(tappayStatus);
+
   // 確認是否可以 getPrime
   if (tappayStatus.canGetPrime === false) {
     console.log("can not get prime");
@@ -133,8 +93,6 @@ bookingBtnMain.addEventListener("click", (event) => {
     // localStorage.setItem("prime", prime);
 
     orderMyTour();
-    // send prime to your server, to pay with Pay by Prime API .
-    // Pay By Prime Docs: https://docs.tappaysdk.com/tutorial/zh/back.html#pay-by-prime-api
   });
 });
 
@@ -142,7 +100,6 @@ async function orderMyTour() {
   try {
     const token = localStorage.getItem("token");
     // const prime = localStorage.getItem("prime");
-    console.log(prime);
     const phoneNumber = document.querySelector("#phone-number").value;
     const response = await fetch("/api/orders", {
       method: "POST",
@@ -176,18 +133,24 @@ async function orderMyTour() {
     const data = await response.json();
 
     console.log(data);
-    // if (data.ok) {
-    //   window.location.href = "/booking";
-    // } else {
-    //   console.log(data.message);
-    // }
+    if (data.data.number) {
+      console.log(data.data.number);
+
+      // 提取data.number的值
+      let orderNumber = data.data.number;
+      // 構建新的URL
+      let redirectUrl = `/thankyou?${orderNumber}`;
+
+      window.location.href = redirectUrl;
+    } else {
+      console.log(data.message);
+    }
   } catch (err) {
     console.log("fetch err: ", err);
   }
 }
 // export { prime };
 // console.log(prime); undefined
-// 4242424242424242
 
 // import { prime } from "./pay.js";
 
@@ -339,9 +302,3 @@ document
       console.log(err);
     }
   });
-
-// 按下按鈕後的邏輯
-
-// bookingBtnMain.addEventListener("click", async () => {
-
-// });

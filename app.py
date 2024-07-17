@@ -25,6 +25,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 10800
 
+PARTNER_KEY = os.getenv("PARTNER_KEY")
 # 掛載靜態文件
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -217,17 +218,11 @@ async def order_my_tour(request: Request,
     # 連線TapPay伺服器
     url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"  # 測試環境URL
 
-    headers = {
-        "Content-Type":
-        "application/json",
-        "x-api-key":
-        "partner_a8LcEfdXGwJ0KZ6mQxvkhGz5DSFFswAIK5viNCNbUg7C7TyXSo141ww2"
-    }
+    headers = {"Content-Type": "application/json", "x-api-key": PARTNER_KEY}
 
     payment_data = {
         "prime": prime,
-        "partner_key":
-        "partner_a8LcEfdXGwJ0KZ6mQxvkhGz5DSFFswAIK5viNCNbUg7C7TyXSo141ww2",
+        "partner_key": PARTNER_KEY,
         "merchant_id": "hnu0412_TAISHIN",
         "amount": price,
         "details": "Tour Booking Payment",
