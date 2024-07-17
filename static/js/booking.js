@@ -1,5 +1,6 @@
 // SetupSDK
 let prime;
+
 const APP_ID = 152092;
 const appKey =
   "app_HUVYg88ZYWQ2wsxAuJWLBfGhhVPATfVq0xrzE0e2hliTBq6BZHR2HTrbLfLt";
@@ -88,7 +89,7 @@ bookingBtnMain.addEventListener("click", (event) => {
       alert("get prime error " + result.msg);
       return;
     }
-    console.log("get prime 成功，prime: " + result.card.prime);
+    // console.log("get prime 成功，prime: " + result.card.prime);
     prime = result.card.prime;
     // localStorage.setItem("prime", prime);
 
@@ -132,15 +133,14 @@ async function orderMyTour() {
 
     const data = await response.json();
 
-    console.log(data);
     if (data.data.number) {
-      console.log(data.data.number);
-
-      // 提取data.number的值
       let orderNumber = data.data.number;
-      // 構建新的URL
-      let redirectUrl = `/thankyou?${orderNumber}`;
+      sessionStorage.setItem("orderNumber", orderNumber);
 
+      let paymentStatus = data.data.payment.status;
+      sessionStorage.setItem("paymentStatus", paymentStatus);
+
+      let redirectUrl = `/thankyou?number=${orderNumber}`;
       window.location.href = redirectUrl;
     } else {
       console.log(data.message);

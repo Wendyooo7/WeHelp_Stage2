@@ -10,7 +10,6 @@ from jwt.exceptions import InvalidTokenError
 from datetime import datetime, timedelta, timezone
 import random
 import urllib.request
-# 確認是否在ubuntu pip
 import json
 
 load_dotenv()
