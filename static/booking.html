@@ -78,7 +78,12 @@
         />
         <br />
         <label for="phone-number" class="main__block__label">手機號碼：</label>
-        <input type="text" name="phone-number" class="main__block__inputs" />
+        <input
+          type="text"
+          id="phone-number"
+          name="phone-number"
+          class="main__block__inputs"
+        />
         <div class="bold">
           請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式
         </div>
@@ -88,42 +93,35 @@
 
       <div class="main__block" id="credit-card-info">
         <div class="main__block__title">信用卡付款資訊</div>
-        <label for="card-number" class="main__block__labels">卡片號碼：</label>
-        <input
-          type="text"
-          placeholder="**** **** ****"
-          name="card-number"
-          class="main__block__inputs"
-        />
+        <label for="card-number" class="main__block__labels inline-block"
+          >卡片號碼：</label
+        >
+        <div id="card-number" class="main__block__inputs inline-block"></div>
         <br />
-        <label for="expire-date" class="main__block__labels">過期時間：</label>
-        <input
-          type="month"
-          placeholder="YYYY / MM"
-          name="expire-date"
-          class="main__block__inputs"
-        />
+        <label for="expire-date" class="main__block__labels inline-block"
+          >過期時間：</label
+        >
+        <div
+          id="card-expiration-date"
+          class="main__block__inputs inline-block"
+        ></div>
         <br />
         <label
           for="
-        verification-number"
-          class="main__block__label"
+          verification-number"
+          class="main__block__label inline-block"
           >驗證碼：</label
         >
-        <input
-          type="text"
-          placeholder="CVV"
-          name="
-        Verification number"
-          class="main__block__inputs"
-        />
+        <div id="card-ccv" class="main__block__inputs inline-block"></div>
       </div>
 
       <hr />
 
       <div id="price-submit">
         <div id="price-submit__price" class="main__block__content"></div>
-        <div class="booking-btn main__block__content">確認訂購並付款</div>
+        <button class="booking-btn main__block__content" id="main-booking-btn">
+          確認訂購並付款
+        </button>
       </div>
     </main>
 
@@ -220,6 +218,8 @@
       </div>
     </div>
     <footer>COPYRIGHT © 2021 台北一日遊</footer>
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <!-- <script src="/static/js/pay.js"></script> -->
     <script src="/static/js/booking.js"></script>
   </body>
 </html>

@@ -90,16 +90,8 @@ main {
   }
 
   .main__block__labels,
-  .main__block__inputs,
   .main__block__content {
     margin-bottom: 15px;
-  }
-
-  .main__block__inputs {
-    width: 25%;
-    border: 1px solid $decorate-color;
-    border-radius: 5px;
-    padding: 10px;
   }
 
   div#price-submit {
@@ -121,6 +113,38 @@ main {
       margin-left: auto;
     }
   }
+}
+
+// 取消btn預設
+button {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+// 必要時再移進去main
+.main__block__inputs {
+  width: 25%;
+  height: 50px;
+  border: 1px solid $decorate-color;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.inline-block {
+  display: inline-block;
+  vertical-align: middle; /* optional, to align them better */
 }
 
 .bold {

@@ -119,14 +119,4 @@ button,
 span#toSign-up-Modal,
 span#toSign-in-modal:hover {
   cursor: pointer;
-}
-
-::-moz-placeholder {
-  color: rgb(117, 117, 117);
-  opacity: 1; /* Firefox */
-}
-
-::placeholder {
-  color: rgb(117, 117, 117);
-  opacity: 1; /* Firefox */
 }/*# sourceMappingURL=global.css.map */

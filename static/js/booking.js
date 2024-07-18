@@ -1,3 +1,159 @@
+// SetupSDK
+let prime;
+
+const APP_ID = 152092;
+const appKey =
+  "app_HUVYg88ZYWQ2wsxAuJWLBfGhhVPATfVq0xrzE0e2hliTBq6BZHR2HTrbLfLt";
+TPDirect.setupSDK(APP_ID, appKey, "sandbox");
+
+let fields = {
+  number: {
+    // css selector
+    element: "#card-number",
+    placeholder: "**** **** **** ****",
+  },
+  expirationDate: {
+    // DOM object
+    element: document.getElementById("card-expiration-date"),
+    placeholder: "MM / YY",
+  },
+  ccv: {
+    element: "#card-ccv",
+    placeholder: "CCV",
+  },
+};
+
+TPDirect.card.setup({
+  fields: fields,
+  styles: {
+    // Styling ccv field
+    "input.ccv": {
+      "font-size": "16px",
+    },
+    // Styling expiration-date field
+    "input.expiration-date": {
+      "font-size": "16px",
+    },
+    // Styling card-number field
+    "input.card-number": {
+      "font-size": "16px",
+    },
+    // style focus state
+    ":focus": {
+      color: "black",
+    },
+    // style valid state
+    ".valid": {
+      color: "green",
+    },
+    // style invalid state
+    ".invalid": {
+      color: "red",
+    },
+    // Media queries
+    // Note that these apply to the iframe, not the root window.
+    "@media screen and (max-width: 400px)": {
+      input: {
+        color: "orange",
+      },
+    },
+  },
+  // 此設定會顯示卡號輸入正確後，會顯示前六後四碼信用卡卡號
+  isMaskCreditCardNumber: true,
+  maskCreditCardNumberRange: {
+    beginIndex: 6,
+    endIndex: 11,
+  },
+});
+
+const bookingBtnMain = document.querySelector("#main-booking-btn");
+
+// TPDirect.card.getPrime(callback);
+// TPDirect.card.getTappayFieldsStatus()等同以下
+bookingBtnMain.addEventListener("click", (event) => {
+  event.preventDefault();
+
+  // 取得 TapPay Fields 的 status
+  const tappayStatus = TPDirect.card.getTappayFieldsStatus();
+
+  // 確認是否可以 getPrime
+  if (tappayStatus.canGetPrime === false) {
+    console.log("can not get prime");
+    alert("請檢查信用卡資訊欄位是否都完整輸入，以及是否輸入正確");
+    return;
+  }
+
+  // Get prime
+  TPDirect.card.getPrime((result) => {
+    if (result.status !== 0) {
+      alert("get prime error " + result.msg);
+      return;
+    }
+    // console.log("get prime 成功，prime: " + result.card.prime);
+    prime = result.card.prime;
+    // localStorage.setItem("prime", prime);
+
+    orderMyTour();
+  });
+});
+
+async function orderMyTour() {
+  try {
+    const token = localStorage.getItem("token");
+    // const prime = localStorage.getItem("prime");
+    const phoneNumber = document.querySelector("#phone-number").value;
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        prime: prime,
+        order: {
+          price: dataFee,
+          trip: {
+            attraction: {
+              id: dataAttractionId,
+              name: dataName,
+              address: dataAddress,
+              image: dataImg,
+            },
+            date: dataDate,
+            time: dataTime,
+          },
+          contact: {
+            name: loginName,
+            email: loginEmail,
+            phone: phoneNumber,
+          },
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.data.number) {
+      let orderNumber = data.data.number;
+      sessionStorage.setItem("orderNumber", orderNumber);
+
+      let paymentStatus = data.data.payment.status;
+      sessionStorage.setItem("paymentStatus", paymentStatus);
+
+      let redirectUrl = `/thankyou?number=${orderNumber}`;
+      window.location.href = redirectUrl;
+    } else {
+      console.log(data.message);
+    }
+  } catch (err) {
+    console.log("fetch err: ", err);
+  }
+}
+// export { prime };
+// console.log(prime); undefined
+
+// import { prime } from "./pay.js";
+
 let loginName;
 let loginEmail;
 
@@ -6,10 +162,8 @@ const token = localStorage.getItem("token");
 if (!token) {
   window.location.replace("/");
 } else {
-  // document.addEventListener("DOMContentLoaded", () => {
   getNameAndEmail();
   fetchToGetMyTour();
-  // });
 }
 
 async function getNameAndEmail() {
@@ -45,6 +199,14 @@ const ordererName = document.querySelector("#order-info__name");
 const ordererEmail = document.querySelector("#order-info__email");
 const submitPrice = document.querySelector("#price-submit__price");
 
+let dataFee;
+let dataAttractionId;
+let dataName;
+let dataAddress;
+let dataImg;
+let dataDate;
+let dataTime;
+
 async function fetchToGetMyTour() {
   const token = localStorage.getItem("token");
 
@@ -57,16 +219,18 @@ async function fetchToGetMyTour() {
   });
 
   const data = await response.json();
+
   if (!data.data) {
     main.innerHTML = `<div id="main__greeting">您好，${loginName}，待預定的行程如下：</div>
        <div id="main__no-booking-data">目前沒有任何待預定的行程</div>`;
   } else {
-    const dataImg = data["data"]["attraction"]["image"];
-    const dataName = data["data"]["attraction"]["name"];
-    const dataDate = data["data"]["date"];
-    const dataTime = data["data"]["time"];
-    const dataFee = data["data"]["price"];
-    const dataAddress = data["data"]["attraction"]["address"];
+    dataImg = data["data"]["attraction"]["image"];
+    dataName = data["data"]["attraction"]["name"];
+    dataDate = data["data"]["date"];
+    dataTime = data["data"]["time"];
+    dataFee = data["data"]["price"];
+    dataAddress = data["data"]["attraction"]["address"];
+    dataAttractionId = data["data"]["attraction"]["id"];
 
     sayHiToOrderer.textContent = `您好，${loginName}，待預定的行程如下：`;
     tourImg.src = dataImg;
