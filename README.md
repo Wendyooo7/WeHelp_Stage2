@@ -40,9 +40,9 @@
 ### 6. 第三方金流串接 Third-Party Payment Gateway Integration
 <img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/TapPay-optimized_cak2fs.gif" width="700" />
 
-### 7. 響應式網頁設計 RWD，支援 360px 至 1920px 寬的瀏覽器視窗
+### 7. 響應式網頁設計 RWD，支援小至 360px、大至 1920px 寬的瀏覽器視窗
 <img src="https://github.com/user-attachments/assets/d128015b-2e33-4398-9e74-c84be90ced31" />
-上圖由左至由分別為 1920px × 1080px 的桌機版，768px × 1024px 的平板版和 360px × 640px 的手機版
+（上圖由左至由分別為 1920px × 1080px 的桌機版、768px × 1024px 的平板版和 360px × 640px 的手機版）
 
 <br/>
 
