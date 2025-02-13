@@ -7,20 +7,41 @@
 <br/>
 
 ### 您可點擊本文標題來開啟網站，並搭配以下資訊進行體驗：
-
 1. 已註冊之會員帳號與密碼
 
 | 帳號 | 密碼 |
 |------|------|
 | test@gmail.com | test1234 |
 
-<br/>
-
 2. 可預約付費導覽服務之信用卡資訊
    
 | 卡號 | 有效年月 | CCV |
 |------|---------|-----|
 | 4242 4242 4242 4242 | 01/31 | 123 |
+
+<br/>
+
+## 重點功能展示
+### 無限滾動 Infinite Scroll / 延遲載入 Lazy Loading
+<img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/infinite-scroll-optimized_di8ai2.webp" />
+
+### 圖片輪播 Image Carousel
+<img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/image-carousel_oroq7m.webp" />
+
+### 互動視窗 Modal
+<img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/pop-up-modal_nf1xrb.webp" />
+
+### 關鍵字查詢
+<img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/query_b8jcwi.webp" />
+
+### 第三方金流串接
+<img src="https://res.cloudinary.com/dw2ix0vr3/image/upload/TapPay-optimized_cak2fs.gif" />
+
+### 響應式網頁設計 RWD，從 360px 至 1920px 寬的瀏覽器視窗皆可支援
+<img src="https://github.com/user-attachments/assets/d128015b-2e33-4398-9e74-c84be90ced31" />
+上圖由左至由分別為 1920px × 1080px 的桌機版，768px × 1024px 的平板版和 360px × 640px 的手機版
+
+<br/>
 
 ## 使用技術
 ### 前端
@@ -41,10 +62,6 @@
 ![Prettier](https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=Prettier&logoColor=white)
 ![Chrome DevTools](https://img.shields.io/badge/Chrome%20DevTools-4285F4?style=for-the-badge&logo=GoogleChrome&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white)
-
-### 版本控制
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=GitHub&logoColor=white)
 
 
 
