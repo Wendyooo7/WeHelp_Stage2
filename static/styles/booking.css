@@ -4,15 +4,15 @@
 
 main {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;
 }
 main div#main__greeting {
   max-width: 1000px;
   width: 100%;
-  margin: 30px 0;
-  padding: 0 10px;
+  margin: 2rem 0;
+  padding: 0 1rem;
   font-weight: bold;
 }
 main div#main__booking__info__area {
@@ -33,12 +33,12 @@ main div#main__booking__info__area div#main__booking__info {
   max-width: 700px;
   position: relative;
 }
-main div#main__booking__info__area div#main__booking__info img#main__booking__info__delete {
+main div#main__booking__info__area div#main__booking__info div#main__booking__info__delete {
+  display: flex;
+  height: 30px;
   position: absolute;
   top: 0;
   right: 0;
-}
-main div#main__booking__info__area div#main__booking__info img#main__booking__info__delete:hover {
   cursor: pointer;
 }
 main div#main__booking__info__area div#main__booking__info div#main__booking__info__attraction-name {
@@ -128,11 +128,10 @@ button {
 #main__no-booking-data {
   width: 100%;
   max-width: 1000px;
-  margin-bottom: 62vh;
-  padding: 0 10px;
+  padding: 0 1rem;
 }
 
-@media (min-width: 655px) and (max-width: 975px) {
+@media (max-width: 975px) {
   main div#main__booking__info__area img#main__booking__info__img {
     width: 100%;
     height: 450px;
@@ -147,15 +146,18 @@ button {
   main div#main__booking__info__area div#main__booking__info div#main__booking__info__attraction-name {
     margin: 30px 0;
   }
-  main div#main__booking__info__area div#main__booking__info img#main__booking__info__delete {
+  main div#main__booking__info__area div#main__booking__info div#main__booking__info__delete {
     top: auto;
-    bottom: -10%;
+    bottom: -20px;
   }
   main div#price-submit .booking-btn {
     width: 25%;
   }
 }
-@media (min-width: 360px) and (max-width: 654px) {
+@media (max-width: 654px) {
+  .main__block__inputs {
+    width: 50%;
+  }
   main div#main__booking__info__area img#main__booking__info__img {
     width: 100%;
     height: 225px;
@@ -170,14 +172,11 @@ button {
   main div#main__booking__info__area div#main__booking__info div#main__booking__info__attraction-name {
     margin: 30px 0;
   }
-  main div#main__booking__info__area div#main__booking__info img#main__booking__info__delete {
+  main div#main__booking__info__area div#main__booking__info div#main__booking__info__delete {
     top: auto;
-    bottom: -10%;
+    bottom: -20px;
   }
   main div#price-submit .booking-btn {
     width: 45%;
-  }
-  main .main__block__inputs {
-    width: 50%;
   }
 }/*# sourceMappingURL=booking.css.map */

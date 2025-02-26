@@ -1,52 +1,52 @@
 @charset "UTF-8";
-div#banner__img {
+section#banner__img {
   width: 100%;
   display: flex;
   justify-content: center;
   position: relative;
 }
-div#banner__img img#welcome101 {
-  width: 100%; /* 讓圖片寬度與其容器相同，注意！此時就不能用max-width，否則1920px網頁右側還是會留白 */
-  height: 320px; /* 保持圖片的長寬比 */
+section#banner__img img#welcome101 {
+  width: 100%;
+  height: 320px;
   -o-object-fit: cover;
      object-fit: cover;
 }
-div#banner__img div#banner-area {
+section#banner__img div#banner-area {
   padding: 10px;
   width: 100%;
   max-width: 1200px;
   position: absolute;
   top: 60px;
 }
-div#banner__img div#banner-area div#banner__text {
+section#banner__img div#banner-area div#banner__text {
   width: 100%;
 }
-div#banner__img div#banner-area div#banner__text h2,
-div#banner__img div#banner-area div#banner__text h3,
-div#banner__img div#banner-area div#banner__text input {
+section#banner__img div#banner-area div#banner__text h2,
+section#banner__img div#banner-area div#banner__text h3,
+section#banner__img div#banner-area div#banner__text input {
   margin: 10px 0;
 }
-div#banner__img div#banner-area div#banner__text h2 {
+section#banner__img div#banner-area div#banner__text h2 {
   color: white;
   font-size: 30px;
 }
-div#banner__img div#banner-area div#banner__text h3 {
+section#banner__img div#banner-area div#banner__text h3 {
   color: white;
   font-size: 15px;
   font-weight: normal;
 }
-div#banner__img div#banner-area div#banner__text #banner__search {
+section#banner__img div#banner-area div#banner__text #banner__search {
   display: flex;
   align-items: center;
 }
-div#banner__img div#banner-area div#banner__text #banner__search #banner__search__keyword {
+section#banner__img div#banner-area div#banner__text #banner__search #banner__search__keyword {
   width: 40%;
   height: 50px;
   font-size: 20px;
   border-radius: 5px 0 0 5px;
-  padding: 0 5px;
+  padding: 0 0.7rem;
 }
-div#banner__img div#banner-area div#banner__text #banner__search #banner__search__btn {
+section#banner__img div#banner-area div#banner__text #banner__search #banner__search__btn {
   background-color: rgb(68, 136, 153);
   border-radius: 0 5px 5px 0;
   height: 50px;
@@ -54,73 +54,69 @@ div#banner__img div#banner-area div#banner__text #banner__search #banner__search
   display: flex;
   align-items: center;
   justify-content: center;
-}
-div#banner__img div#banner-area div#banner__text #banner__search #banner__search__btn:hover {
   cursor: pointer;
 }
 
-main {
+div#mrt-bar-and-attractions-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
 }
-main div#mrt-bar {
+div#mrt-bar-and-attractions-container div#mrt-bar {
   max-width: 1200px;
   width: 100%;
   padding: 10px;
   display: flex;
-  justify-content: space-between; /* 按鈕左右對齊 */
+  justify-content: space-between;
   overflow: hidden;
   align-items: center;
 }
-main div#mrt-bar img.mrt-bar__btn {
+div#mrt-bar-and-attractions-container div#mrt-bar img.mrt-bar__btn {
   width: 32px;
   height: 32px;
   opacity: 0.5;
-}
-main div#mrt-bar img.mrt-bar__btn:hover {
   cursor: pointer;
-  opacity: 1;
 }
-main div#mrt-bar #mrt-bar__ul-container {
+div#mrt-bar-and-attractions-container div#mrt-bar img.mrt-bar__btn:hover {
+  opacity: 0.9;
+}
+div#mrt-bar-and-attractions-container div#mrt-bar #mrt-bar__ul-container {
   overflow-x: scroll;
   scrollbar-width: none;
   width: 100%;
 }
-main div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list {
+div#mrt-bar-and-attractions-container div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list {
   height: 50px;
   display: flex;
   list-style: none;
   align-items: center;
 }
-main div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list li {
+div#mrt-bar-and-attractions-container div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list li {
   display: inline-block;
   font-size: 15px;
   padding: 10px;
   white-space: nowrap; /* 防止空間不夠時自動換行，設在ul也可以 */
-}
-main div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list li:hover {
   cursor: pointer;
+}
+div#mrt-bar-and-attractions-container div#mrt-bar #mrt-bar__ul-container ul#mrt-bar__list li:hover {
   font-weight: bold;
 }
-main div#attractions {
-  max-width: 1200px;
+div#mrt-bar-and-attractions-container div#attractions {
   width: 100%;
+  max-width: 1200px;
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 每橫排4個，每張圖寬度相等 */
   gap: 20px; /* 設置列之間的間隙 */
   padding: 10px;
 }
-main div.attraction {
+div#mrt-bar-and-attractions-container div.attraction {
   border: 1px solid rgb(232, 232, 232);
-}
-main div.attraction:hover {
   cursor: pointer;
 }
-main div.attraction .attraction-img-name-container {
+div#mrt-bar-and-attractions-container div.attraction .attraction-img-name-container {
   position: relative;
 }
-main div.attraction .attraction-img-name-container img.img0 {
+div#mrt-bar-and-attractions-container div.attraction .attraction-img-name-container img.img0 {
   height: 208.3px;
   width: 100%;
   position: relative;
@@ -128,7 +124,7 @@ main div.attraction .attraction-img-name-container img.img0 {
      object-fit: cover;
   display: block;
 }
-main div.attraction .attraction-img-name-container .attraction__info__name {
+div#mrt-bar-and-attractions-container div.attraction .attraction-img-name-container .attraction__info__name {
   padding: 5px;
   width: 100%;
   font-weight: 700;
@@ -138,33 +134,40 @@ main div.attraction .attraction-img-name-container .attraction__info__name {
   position: absolute;
   bottom: 0;
 }
-main div.attraction .attraction__info {
+div#mrt-bar-and-attractions-container div.attraction .attraction__info {
   display: flex;
   justify-content: space-between;
   padding: 5px;
 }
-main div.attraction .attraction__info .attraction__info__MRT,
-main div.attraction .attraction__info .attraction__info__CAT {
+div#mrt-bar-and-attractions-container div.attraction .attraction__info .attraction__info__MRT,
+div#mrt-bar-and-attractions-container div.attraction .attraction__info .attraction__info__CAT {
   color: rgb(117, 117, 117);
   font-weight: 500;
   font-size: 16px;
 }
+div#mrt-bar-and-attractions-container div#no-search-result {
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
 
-@media (min-width: 600px) and (max-width: 1199px) {
-  main div#attractions {
-    display: grid;
+@media (max-width: 1200px) {
+  div#mrt-bar-and-attractions-container div#attractions {
     grid-template-columns: repeat(2, 1fr); /*一排2個，每列相等的寬度 */
   }
-  main div.attraction .attraction-img-name-container img.img0 {
-    height: 400px;
+  div#mrt-bar-and-attractions-container div.attraction .attraction-img-name-container img.img0 {
+    height: 300px;
   }
 }
-@media (min-width: 360px) and (max-width: 601px) {
-  main div#attractions {
-    display: grid;
+@media (max-width: 601px) {
+  div#mrt-bar-and-attractions-container div#attractions {
     grid-template-columns: repeat(1, 1fr); /*一排1個，每列相等的寬度 */
   }
-  main div.attraction .attraction-img-name-container img.img0 {
+  div#mrt-bar-and-attractions-container div.attraction .attraction-img-name-container img.img0 {
     height: 250px;
+  }
+  section#banner__img div#banner-area div#banner__text #banner__search #banner__search__keyword {
+    width: 55%;
   }
 }/*# sourceMappingURL=index.css.map */

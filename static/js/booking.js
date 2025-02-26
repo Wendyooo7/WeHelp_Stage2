@@ -1,4 +1,143 @@
-// SetupSDK
+let loginName;
+let loginEmail;
+
+const token = localStorage.getItem("token");
+
+if (!token) {
+  window.location.replace("/");
+} else {
+  getNameAndEmail();
+  fetchToGetMyTour();
+}
+
+async function getNameAndEmail() {
+  try {
+    const response = await fetch("/api/user/auth", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // 在 Authorization header 中攜帶 Bearer Token
+      },
+    });
+
+    const data = await response.json();
+    if (data.data) {
+      loginName = data.data.name;
+      loginEmail = data.data.email;
+    }
+  } catch (err) {
+    console.error("獲取姓名和電子信箱時發生問題:", err);
+  }
+}
+
+const sayHiToOrderer = document.querySelector("#main__greeting");
+const tourName = document.querySelector(
+  "#main__booking__info__attraction-name"
+);
+const tourDate = document.querySelector("#main__booking__info__date");
+const tourTime = document.querySelector("#main__booking__info__time");
+const tourFee = document.querySelector("#main__booking__info__fee");
+const tourAddress = document.querySelector("#main__booking__info__address");
+const tourImg = document.querySelector("#main__booking__info__img");
+const ordererName = document.querySelector("#order-info__name");
+const ordererEmail = document.querySelector("#order-info__email");
+const submitPrice = document.querySelector("#price-submit__price");
+
+let dataFee;
+let dataAttractionId;
+let dataName;
+let dataAddress;
+let dataImg;
+let dataDate;
+let dataTime;
+
+async function fetchToGetMyTour() {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch("/api/booking", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!data.data) {
+    main.innerHTML = `<div id="main__greeting">您好，${loginName}，待預定的行程如下：</div>
+       <div id="main__no-booking-data">目前沒有任何待預定的行程</div>`;
+  } else {
+    dataImg = data["data"]["attraction"]["image"];
+    dataName = data["data"]["attraction"]["name"];
+    dataDate = data["data"]["date"];
+    dataTime = data["data"]["time"];
+    dataFee = data["data"]["price"];
+    dataAddress = data["data"]["attraction"]["address"];
+    dataAttractionId = data["data"]["attraction"]["id"];
+
+    renderBookingPage();
+  }
+  main.style.display = "flex";
+}
+
+function renderBookingPage() {
+  sayHiToOrderer.textContent = `您好，${loginName}，待預定的行程如下：`;
+  tourImg.src = dataImg;
+  tourName.textContent = `台北一日遊：${dataName}`;
+  tourDate.innerHTML = `<strong>日期：</strong>${dataDate}`;
+  renderTourTimeContent(dataTime);
+  renderTourFeeContent(dataFee);
+  tourAddress.innerHTML = `<strong>地點：</strong>${dataAddress}`;
+  ordererName.value = loginName;
+  ordererEmail.value = loginEmail;
+}
+
+function renderTourTimeContent(dataTime) {
+  if (dataTime === "morning") {
+    tourTime.innerHTML = "<strong>時間：</strong>上午 9 點到中午 12 點";
+  } else {
+    tourTime.innerHTML = "<strong>時間：</strong>下午 2 點到下午 5 點";
+  }
+}
+
+function renderTourFeeContent(dataFee) {
+  if (dataFee === 2000) {
+    tourFee.innerHTML = "<strong>費用：</strong>新台幣 2000 元";
+    submitPrice.innerHTML = "<strong>總價：新台幣 2000 元</strong>";
+  } else {
+    tourFee.innerHTML = "<strong>費用：</strong>新台幣 2500 元";
+    submitPrice.innerHTML = "<strong>總價：新台幣 2500 元</strong>";
+  }
+}
+
+document
+  .querySelector("#main__booking__info__delete")
+  .addEventListener("click", async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/booking", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.ok) {
+        console.log("刪除成功");
+        window.location.reload();
+      } else {
+        console.log(data.message);
+      }
+    } catch (err) {
+      console.error("刪除預定中的行程發生問題:", err);
+    }
+  });
+
+// 處理 TapPay SDK
 let prime;
 
 const APP_ID = 152092;
@@ -58,7 +197,7 @@ TPDirect.card.setup({
       },
     },
   },
-  // 此設定會顯示卡號輸入正確後，會顯示前六後四碼信用卡卡號
+  // 若卡號輸入正確，將顯示前六和後四碼以維護安全
   isMaskCreditCardNumber: true,
   maskCreditCardNumberRange: {
     beginIndex: 6,
@@ -72,6 +211,15 @@ const bookingBtnMain = document.querySelector("#main-booking-btn");
 // TPDirect.card.getTappayFieldsStatus()等同以下
 bookingBtnMain.addEventListener("click", (event) => {
   event.preventDefault();
+
+  const phoneNumber = document.querySelector("#phone-number").value;
+  const name = document.querySelector("#order-info__name");
+  const email = document.querySelector("#order-info__email");
+
+  if (!phoneNumber || !name || !email) {
+    alert("請確認聯絡資訊皆已確實填寫");
+    return;
+  }
 
   // 取得 TapPay Fields 的 status
   const tappayStatus = TPDirect.card.getTappayFieldsStatus();
@@ -89,10 +237,8 @@ bookingBtnMain.addEventListener("click", (event) => {
       alert("get prime error " + result.msg);
       return;
     }
-    // console.log("get prime 成功，prime: " + result.card.prime);
-    prime = result.card.prime;
-    // localStorage.setItem("prime", prime);
 
+    prime = result.card.prime;
     orderMyTour();
   });
 });
@@ -100,7 +246,6 @@ bookingBtnMain.addEventListener("click", (event) => {
 async function orderMyTour() {
   try {
     const token = localStorage.getItem("token");
-    // const prime = localStorage.getItem("prime");
     const phoneNumber = document.querySelector("#phone-number").value;
     const response = await fetch("/api/orders", {
       method: "POST",
@@ -146,123 +291,11 @@ async function orderMyTour() {
       console.log(data.message);
     }
   } catch (err) {
-    console.log("fetch err: ", err);
-  }
-}
-// export { prime };
-// console.log(prime); undefined
-
-// import { prime } from "./pay.js";
-
-let loginName;
-let loginEmail;
-
-const token = localStorage.getItem("token");
-
-if (!token) {
-  window.location.replace("/");
-} else {
-  getNameAndEmail();
-  fetchToGetMyTour();
-}
-
-async function getNameAndEmail() {
-  try {
-    const response = await fetch("/api/user/auth", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        // 在 Authorization header 中攜帶 Bearer Token
-      },
-    });
-
-    const data = await response.json();
-    if (data.data) {
-      loginName = data.data.name;
-      loginEmail = data.data.email;
-    }
-  } catch (err) {
-    console.log("fetch err: ", err);
+    console.error("預定行程時發生問題:", err);
   }
 }
 
-const sayHiToOrderer = document.querySelector("#main__greeting");
-const tourName = document.querySelector(
-  "#main__booking__info__attraction-name"
-);
-const tourDate = document.querySelector("#main__booking__info__date");
-const tourTime = document.querySelector("#main__booking__info__time");
-const tourFee = document.querySelector("#main__booking__info__fee");
-const tourAddress = document.querySelector("#main__booking__info__address");
-const tourImg = document.querySelector("#main__booking__info__img");
-const ordererName = document.querySelector("#order-info__name");
-const ordererEmail = document.querySelector("#order-info__email");
-const submitPrice = document.querySelector("#price-submit__price");
-
-let dataFee;
-let dataAttractionId;
-let dataName;
-let dataAddress;
-let dataImg;
-let dataDate;
-let dataTime;
-
-async function fetchToGetMyTour() {
-  const token = localStorage.getItem("token");
-
-  const response = await fetch("/api/booking", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await response.json();
-
-  if (!data.data) {
-    main.innerHTML = `<div id="main__greeting">您好，${loginName}，待預定的行程如下：</div>
-       <div id="main__no-booking-data">目前沒有任何待預定的行程</div>`;
-  } else {
-    dataImg = data["data"]["attraction"]["image"];
-    dataName = data["data"]["attraction"]["name"];
-    dataDate = data["data"]["date"];
-    dataTime = data["data"]["time"];
-    dataFee = data["data"]["price"];
-    dataAddress = data["data"]["attraction"]["address"];
-    dataAttractionId = data["data"]["attraction"]["id"];
-
-    sayHiToOrderer.textContent = `您好，${loginName}，待預定的行程如下：`;
-    tourImg.src = dataImg;
-    tourName.textContent = `台北一日遊：${dataName}`;
-    tourDate.innerHTML = `<strong>日期：</strong>${dataDate}`;
-    renderTourTimeContent(dataTime);
-    renderTourFeeContent(dataFee);
-    tourAddress.innerHTML = `<strong>地點：</strong>${dataAddress}`;
-    ordererName.value = loginName;
-    ordererEmail.value = loginEmail;
-  }
-  main.style.display = "flex";
-}
-
-function renderTourTimeContent(dataTime) {
-  if (dataTime === "morning") {
-    tourTime.innerHTML = "<strong>時間：</strong>上午 9 點到中午 12 點";
-  } else {
-    tourTime.innerHTML = "<strong>時間：</strong>下午 2 點到下午 5 點";
-  }
-}
-
-function renderTourFeeContent(dataFee) {
-  if (dataFee === 2000) {
-    tourFee.innerHTML = "<strong>費用：</strong>新台幣 2000 元";
-    submitPrice.innerHTML = "<strong>總價：新台幣 2000 元</strong>";
-  } else {
-    tourFee.innerHTML = "<strong>費用：</strong>新台幣 2500 元";
-    submitPrice.innerHTML = "<strong>總價：新台幣 2500 元</strong>";
-  }
-}
-
+// 處理 nav 按鈕邏輯
 const bookingBtnNav = document.querySelector("#nav-booking-btn");
 const signStatusBtn = document.querySelector("#sign-status-btn");
 const main = document.querySelector("#booking-main");
@@ -276,29 +309,3 @@ signStatusBtn.addEventListener("click", () => {
   signStatusBtn.textContent = "登入／註冊";
   window.location.href = "/";
 });
-
-document
-  .querySelector("#main__booking__info__delete")
-  .addEventListener("click", async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/booking", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (data.ok) {
-        console.log("刪除成功");
-        window.location.reload();
-      } else {
-        console.log(data.message);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  });

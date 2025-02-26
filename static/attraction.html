@@ -1,207 +1,205 @@
 <!DOCTYPE html>
-<html lang="en">
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>台北一日遊</title>
-      <link rel="stylesheet" href="/static/styles/global.css" />
-      <link rel="stylesheet" href="/static/styles/attraction.css" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
-        rel="stylesheet"
-      />
-    </head>
-    <body>
-      <header>
-        <nav>
-          <div class="left">
-            <a href="/"><h1>台北一日遊</h1></a>
-          </div>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="/static/styles/global.css" />
+    <link rel="stylesheet" href="/static/styles/attraction.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
 
-          <div class="right">
-            <div id="nav-booking-btn" class="item">預定行程</div>
-            <div id="sign-status-btn" class="item">登入／註冊</div>
-          </div>
-        </nav>
-      </header>
-
-      <!-- Task 4 起-->
-      <div id="sign-in-modal" class="pop-up-dialog">
-        <div class="sign-container">
-          <div class="sign__header"></div>
-          <div class="sign__main">
-            <img
-              id="sign-in__close-icon"
-              class="sign__close-icon"
-              src="/static/styles/images/icon_close.png"
-              alt="關閉視窗"
-            />
-            <label for="sign-in" class="sign__label sign__item__margin"
-              >登入會員帳號</label
-            >
-            <br />
-            <input
-              name="email"
-              type="text"
-              class="sign__input sign__item__margin sign__item__radius"
-              id="sign-in-email"
-              placeholder="輸入電子信箱"
-            />
-            <br />
-            <input
-              name="password"
-              type="password"
-              class="sign__input sign__item__margin sign__item__radius"
-              id="sign-in-password"
-              placeholder="輸入密碼"
-            />
-            <br />
-            <button
-              class="sign__btn sign__item__margin sign__item__radius"
-              id="sign-in-btn"
-            >
-              登入帳戶
-            </button>
-            <div id="sign-in-msg"></div>
-            <div>還沒有帳戶？<span id="toSign-up-Modal">點此註冊</span></div>
-          </div>
+  <body>
+    <header>
+      <nav>
+        <div class="left">
+          <h1><a href="/">台北一日遊</a></h1>
         </div>
-      </div>
-
-      <div id="sign-up-modal" class="pop-up-dialog">
-        <div class="sign-container">
-          <div class="sign__header"></div>
-          <div class="sign__main">
-            <img
-              id="sign-up__close-icon"
-              class="sign__close-icon"
-              src="/static/styles/images/icon_close.png"
-              alt="關閉視窗"
-            />
-            <label for="sign-up" class="sign__label sign__item__margin"
-              >註冊會員帳號</label
-            >
-            <br />
-            <input
-              name="name"
-              type="text"
-              class="sign__input sign__item__margin sign__item__radius"
-              id="sign-up-name"
-              placeholder="輸入姓名"
-            />
-            <br />
-            <input
-              name="email"
-              type="text"
-              class="sign__input sign__item__margin sign__item__radius"
-              id="sign-up-email"
-              placeholder="輸入電子信箱"
-            />
-            <br />
-            <input
-              name="password"
-              type="password"
-              class="sign__input sign__item__margin sign__item__radius"
-              id="sign-up-password"
-              placeholder="輸入密碼"
-            />
-            <br />
-            <button
-              class="sign__btn sign__item__margin sign__item__radius"
-              id="sign-up-btn"
-            >
-              註冊新帳戶
-            </button>
-            <div id="sign-up-msg"></div>
-            <div>已經有帳戶了？<span id="toSign-in-modal">點此登入</span></div>
-          </div>
+        <div class="right">
+          <div id="nav-booking-btn" class="item">預定行程</div>
+          <div id="sign-status-btn" class="item">登入／註冊</div>
         </div>
-      </div>
-      <!-- Task 4 止-->
+      </nav>
+    </header>
 
-      <main>
-        <div id="attraction__top">
-          <div id="attraction__top__pics">
-            <img id="attraction__top__pic" src="" />
-            <div id="attraction__top__pic__dots"></div>
+    <main>
+      <div id="attraction__top">
+        <div id="attraction__top__pics">
+          <img id="attraction__top__pic" src="" alt="景點照片" />
+          <div id="attraction__top__pic__dots"></div>
 
-            <img
-              id="attraction__top__pics__left-btn"
-              src="/static/styles/images/btn_leftArrow.png"
-            />
-            <img
-              id="attraction__top__pics__right-btn"
-              src="/static/styles/images/btn_rightArrow.png"
-            />
-          </div>
+          <img
+            id="attraction__top__pics__left-btn"
+            src="/static/styles/images/attraction/left-btn.png"
+            alt="往左滑"
+          />
+          <img
+            id="attraction__top__pics__right-btn"
+            src="/static/styles/images/attraction/right-btn.png"
+            alt="往右滑"
+          />
+        </div>
 
-          <div id="attraction__top__info">
-            <h2
-              class="attraction__top__content"
-              id="attraction__top__info__name"
-            ></h2>
+        <div id="attraction__top__info">
+          <h2
+            class="attraction__top__content"
+            id="attraction__top__info__name"
+          ></h2>
 
-            <h3
-              class="attraction__top__content"
-              id="attraction__top__info__catAndMRT"
-            ></h3>
+          <h3
+            class="attraction__top__content"
+            id="attraction__top__info__catAndMRT"
+          ></h3>
 
-            <div id="attraction__top__info__booking__area">
-              <p>
-                <strong>訂購導覽行程</strong>
-                <br />
-                以此景點為中心的一日行程，帶你探索城市角落故事
-                <br />
-                <strong>選擇日期：</strong><input type="date" />
-                <br />
-                <strong>選擇時間：</strong
-                ><input
-                  type="radio"
-                  name="booking-time"
-                  value="morning"
-                  checked
-                />
-                上半天
-                <input type="radio" name="booking-time" value="afternoon" />
-                下半天
-                <strong>
-                  <br />
-                  導覽費用：</strong
-                ><span id="booking-price">新台幣 2000 元</span>
-              </p>
+          <div id="attraction__top__info__booking__area">
+            <p>
+              <strong>訂購導覽行程</strong>
               <br />
-              <div id="booking-btn">開始預約行程</div>
-            </div>
+              以此景點為中心的一日行程，帶你探索城市角落故事
+              <br />
+              <strong>選擇日期：</strong><input type="date" />
+              <br />
+              <strong>選擇時間：</strong
+              ><input
+                type="radio"
+                name="booking-time"
+                value="morning"
+                checked
+              />
+              上半天
+              <input type="radio" name="booking-time" value="afternoon" />
+              下半天
+              <strong>
+                <br />
+                導覽費用：</strong
+              ><span id="booking-price">新台幣 2000 元</span>
+            </p>
+            <br />
+            <div id="booking-btn">開始預約行程</div>
           </div>
         </div>
+      </div>
 
-        <!-- <hr /> -->
-        <!-- 設在這邊的hr會因為main標籤的display:flex而變成直線，看起來像是attraction__top的邊框 -->
+      <div id="attraction__bottom">
+        <p
+          id="attraction__bottom__description"
+          class="attraction__bottom__content"
+        ></p>
+        <p class="attraction__bottom__title"><strong>景點地址：</strong></p>
+        <p
+          id="attraction__bottom__address"
+          class="attraction__bottom__content"
+        ></p>
+        <p class="attraction__bottom__title"><strong>交通方式：</strong></p>
+        <p
+          id="attraction__bottom__transport"
+          class="attraction__bottom__content"
+        ></p>
+      </div>
+    </main>
 
-        <div id="attraction__bottom">
-          <p
-            id="attraction__bottom__description"
-            class="attraction__bottom__content"
-          ></p>
-          <p class="#attraction__bottom__title"><strong>景點地址：</strong></p>
-          <p
-            id="attraction__bottom__address"
-            class="attraction__bottom__content"
-          ></p>
-          <p class="#attraction__bottom__title"><strong>交通方式：</strong></p>
-          <p
-            id="attraction__bottom__transport"
-            class="attraction__bottom__content"
-          ></p>
+    <!-- 登入視窗 -->
+    <div id="sign-in-modal" class="pop-up-dialog">
+      <div class="sign-container">
+        <div class="sign__header"></div>
+        <div class="sign__main">
+          <img
+            id="sign-in__close-icon"
+            class="sign__close-icon"
+            src="/static/styles/images/close-modal.png"
+            alt="關閉視窗"
+          />
+          <label for="sign-in" class="sign__label sign__item__margin"
+            >登入會員帳號</label
+          >
+          <br />
+          <input
+            name="email"
+            type="email"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-in-email"
+            placeholder="輸入電子信箱"
+          />
+          <br />
+          <input
+            name="password"
+            type="password"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-in-password"
+            placeholder="輸入密碼"
+          />
+          <br />
+          <button
+            class="sign__btn sign__item__margin sign__item__radius"
+            id="sign-in-btn"
+          >
+            登入帳戶
+          </button>
+          <div id="sign-in-msg"></div>
+          <div>還沒有帳戶？<span id="toSign-up-Modal">點此註冊</span></div>
         </div>
-      </main>
+      </div>
+    </div>
 
-      <footer>COPYRIGHT © 2021 台北一日遊</footer>
-      <script src="/static/js/attraction.js"></script>
-      <script src="/static/js/sign.js"></script>
-    </body>
-  </html>
+    <!-- 註冊視窗 -->
+    <div id="sign-up-modal" class="pop-up-dialog">
+      <div class="sign-container">
+        <div class="sign__header"></div>
+        <div class="sign__main">
+          <img
+            id="sign-up__close-icon"
+            class="sign__close-icon"
+            src="/static/styles/images/close-modal.png"
+            alt="關閉視窗"
+          />
+          <label for="sign-up" class="sign__label sign__item__margin"
+            >註冊會員帳號</label
+          >
+          <br />
+          <input
+            name="name"
+            type="text"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-name"
+            placeholder="輸入姓名"
+          />
+          <br />
+          <input
+            name="email"
+            type="email"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-email"
+            placeholder="輸入電子信箱"
+          />
+          <br />
+          <input
+            name="password"
+            type="password"
+            class="sign__input sign__item__margin sign__item__radius"
+            id="sign-up-password"
+            placeholder="輸入密碼"
+          />
+          <br />
+          <button
+            class="sign__btn sign__item__margin sign__item__radius"
+            id="sign-up-btn"
+          >
+            註冊新帳戶
+          </button>
+          <div id="sign-up-msg"></div>
+          <div>已經有帳戶了？<span id="toSign-in-modal">點此登入</span></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>COPYRIGHT © 2021 台北一日遊</footer>
+
+    <script src="/static/js/attraction.js"></script>
+    <script src="/static/js/sign.js"></script>
+  </body>
 </html>

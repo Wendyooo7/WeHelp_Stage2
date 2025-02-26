@@ -7,20 +7,15 @@ $decorate-color: rgb(232, 232, 232);
 
 main {
   display: flex;
-  // justify-content: center;
-  flex-wrap: wrap;
-  // width: 100%;
-  // max-width: 1200px;
-  // margin: 0 auto;
   flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;
 
   div#main__greeting {
     max-width: 1000px;
-    // padding: 0 100px;
     width: 100%;
-    margin: 30px 0;
-    padding: 0 10px;
+    margin: 2rem 0;
+    padding: 0 1rem;
     font-weight: bold;
   }
 
@@ -43,14 +38,13 @@ main {
       max-width: 700px;
       position: relative;
 
-      img#main__booking__info__delete {
+      div#main__booking__info__delete {
+        display: flex;
+        height: 30px;
         position: absolute;
         top: 0;
         right: 0;
-
-        &:hover {
-          cursor: pointer;
-        }
+        cursor: pointer;
       }
 
       div#main__booking__info__attraction-name {
@@ -79,8 +73,6 @@ main {
     max-width: 1000px;
     padding: 0 10px;
     margin: 30px 0;
-    // text-align: start;
-    // border: 1px solid green;
   }
 
   div.main__block__title {
@@ -132,7 +124,6 @@ button {
   -moz-appearance: none;
 }
 
-// 必要時再移進去main
 .main__block__inputs {
   width: 25%;
   height: 50px;
@@ -154,11 +145,10 @@ button {
 #main__no-booking-data {
   width: 100%;
   max-width: 1000px;
-  margin-bottom: 62vh;
-  padding: 0 10px;
+  padding: 0 1rem;
 }
 
-@media (min-width: 655px) and (max-width: 975px) {
+@media (max-width: 975px) {
   main {
     div#main__booking__info__area {
       img#main__booking__info__img {
@@ -176,22 +166,25 @@ button {
           margin: 30px 0;
         }
 
-        img#main__booking__info__delete {
+        div#main__booking__info__delete {
           top: auto;
-          bottom: -10%;
+          // 用上行取消前面對top:0;的設定
+          bottom: -20px;
         }
       }
     }
 
-    div#price-submit {
-      .booking-btn {
-        width: 25%;
-      }
+    div#price-submit .booking-btn {
+      width: 25%;
     }
   }
 }
 
-@media (min-width: 360px) and (max-width: 654px) {
+@media (max-width: 654px) {
+  .main__block__inputs {
+    width: 50%;
+  }
+
   main {
     div#main__booking__info__area {
       img#main__booking__info__img {
@@ -209,21 +202,15 @@ button {
           margin: 30px 0;
         }
 
-        img#main__booking__info__delete {
+        div#main__booking__info__delete {
           top: auto;
-          bottom: -10%;
+          bottom: -20px;
         }
       }
     }
 
-    div#price-submit {
-      .booking-btn {
-        width: 45%;
-      }
-    }
-
-    .main__block__inputs {
-      width: 50%;
+    div#price-submit .booking-btn {
+      width: 45%;
     }
   }
 }
