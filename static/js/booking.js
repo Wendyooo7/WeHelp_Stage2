@@ -127,10 +127,9 @@ document
       const data = await response.json();
 
       if (data.ok) {
-        console.log("刪除成功");
         window.location.reload();
       } else {
-        console.log(data.message);
+        console.error(data.message);
       }
     } catch (err) {
       console.error("刪除預定中的行程發生問題:", err);
@@ -226,7 +225,6 @@ bookingBtnMain.addEventListener("click", (event) => {
 
   // 確認是否可以 getPrime
   if (tappayStatus.canGetPrime === false) {
-    console.log("can not get prime");
     alert("請檢查信用卡資訊欄位是否都完整輸入，以及是否輸入正確");
     return;
   }
@@ -288,7 +286,7 @@ async function orderMyTour() {
       let redirectUrl = `/thankyou?number=${orderNumber}`;
       window.location.href = redirectUrl;
     } else {
-      console.log(data.message);
+      console.error(data.message);
     }
   } catch (err) {
     console.error("預定行程時發生問題:", err);
