@@ -76,6 +76,7 @@ function createDivAttraction(id, name, category, mrt, img) {
   const imgAttraction = document.createElement("img");
   imgAttraction.classList.add("img0");
   imgAttraction.src = img;
+  imgAttraction.alt = name;
   divImgName.appendChild(imgAttraction);
 
   const divName = document.createElement("div");
