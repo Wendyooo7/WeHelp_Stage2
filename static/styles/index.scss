@@ -34,7 +34,7 @@ section#banner__img {
 
       h3 {
         color: white;
-        font-size: 15px;
+        font-size: 1rem;
         font-weight: normal;
       }
 
@@ -206,5 +206,25 @@ div#mrt-bar-and-attractions-container {
     #banner__search
     #banner__search__keyword {
     width: 55%;
+  }
+}
+
+@media (max-width: 1600px) {
+  section#banner__img img#welcome101 {
+    height: 400px;
+  }
+
+  section#banner__img div#banner-area {
+    top: 100px;
+  }
+}
+
+@media (max-width: 1280px) {
+  section#banner__img img#welcome101 {
+    height: 320px;
+  }
+
+  section#banner__img div#banner-area {
+    top: 60px;
   }
 }
