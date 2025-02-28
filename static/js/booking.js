@@ -212,8 +212,8 @@ bookingBtnMain.addEventListener("click", (event) => {
   event.preventDefault();
 
   const phoneNumber = document.querySelector("#phone-number").value;
-  const name = document.querySelector("#order-info__name");
-  const email = document.querySelector("#order-info__email");
+  const name = document.querySelector("#order-info__name").value;
+  const email = document.querySelector("#order-info__email").value;
 
   if (!phoneNumber || !name || !email) {
     alert("請確認聯絡資訊皆已確實填寫");
